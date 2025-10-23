@@ -8,10 +8,13 @@ import {
   Plus,
   TrendingUp
 } from "lucide-react";
-import { Card, CardBody, CardHeader, Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Select, SelectItem } from "@heroui/react";
+import { Card, CardBody, CardHeader, Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Select, SelectItem, useDisclosure } from "@heroui/react";
 import { StatCard, StatusBadge } from "@/components/shared";
+import MyModal from "@/components/Modal/MyModal";
 
 export default function Home() {
+  const addOrderModal = useDisclosure();
+
   const ordersData = [
     { id: "ORD-001", customer: "Kevin", amount: "Rp 45.000", status: "Proses", avatar: "K", avatarColor: "bg-blue-100 text-blue-600" },
     { id: "ORD-002", customer: "Damanik", amount: "Rp 32.000", status: "Selesai", avatar: "D", avatarColor: "bg-green-100 text-green-600" },
@@ -116,6 +119,7 @@ export default function Home() {
           <Button 
             color="primary" 
             startContent={<Plus className="w-4 h-4" />}
+            onPress={addOrderModal.onOpen}
           >
             Tambah Pesanan Baru
           </Button>
@@ -145,6 +149,35 @@ export default function Home() {
           </Table>
         </CardBody>
       </Card>
+
+      <MyModal
+        title="Tambah Pesanan Baru" 
+        onOpen={addOrderModal.onOpen} 
+        isOpen={addOrderModal.isOpen} 
+        onOpenChange={addOrderModal.onOpenChange}
+        size="2xl"
+      >
+        <div className="space-y-4">
+          <p className="text-zinc-400">Form tambah pesanan akan ditambahkan di sini</p>
+          
+          <div className="flex gap-2 mt-6">
+            <Button 
+              color="primary" 
+              className="w-1/2"
+            >
+              <Plus className="w-4 h-4" /> Simpan
+            </Button>
+            <Button 
+              color="danger" 
+              className="w-1/2" 
+              variant="flat"
+              onPress={addOrderModal.onClose}
+            >
+              Batal
+            </Button>
+          </div>
+        </div>
+      </MyModal>
     </div>
   );
 }
