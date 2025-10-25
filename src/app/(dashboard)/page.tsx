@@ -8,12 +8,29 @@ import {
   Plus,
   TrendingUp
 } from "lucide-react";
-import { Card, CardBody, CardHeader, Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Select, SelectItem, useDisclosure } from "@heroui/react";
+import { 
+  Card, 
+  CardContent, 
+  Button, 
+  Table, 
+  TableHead, 
+  TableBody, 
+  TableRow, 
+  TableCell, 
+  Select, 
+  MenuItem, 
+  FormControl,
+  InputLabel,
+  Box,
+  Typography,
+  Avatar
+} from '@mui/material';
 import { StatCard, StatusBadge } from "@/components/shared";
 import MyModal from "@/components/Modal/MyModal";
+import { useState } from "react";
 
 export default function Home() {
-  const addOrderModal = useDisclosure();
+  const [addOrderModalOpen, setAddOrderModalOpen] = useState(false);
 
   const ordersData = [
     { id: "ORD-001", customer: "Kevin", amount: "Rp 45.000", status: "Proses", avatar: "K", avatarColor: "bg-blue-100 text-blue-600" },
@@ -27,8 +44,12 @@ export default function Home() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+        gap: 3 
+      }}>
         <StatCard
           title="Order Hari Ini"
           value="42"
@@ -64,75 +85,112 @@ export default function Home() {
           iconColor="text-orange-600"
           iconBgColor="bg-orange-100"
         />
-      </div>
+      </Box>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="shadow-sm">
-          <CardHeader className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">Pendapatan Mingguan</h3>
-            <Select size="sm" defaultSelectedKeys={["7days"]} className="w-40">
-              <SelectItem key="7days">7 Hari Terakhir</SelectItem>
-            </Select>
-          </CardHeader>
-          <CardBody>
-            <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-              <div className="text-center text-gray-500">
-                <TrendingUp className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                <p>Grafik Pendapatan</p>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, 1fr)' },
+        gap: 3 
+      }}>
+        <Card sx={{ boxShadow: 1 }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Pendapatan Mingguan
+                </Typography>
+                <FormControl size="small" sx={{ minWidth: 160 }}>
+                  <InputLabel>Periode</InputLabel>
+                  <Select value="7days" label="Periode">
+                    <MenuItem value="7days">7 Hari Terakhir</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box sx={{ 
+                height: 256, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                backgroundColor: '#f9fafb', 
+                borderRadius: 1 
+              }}>
+                <Box sx={{ textAlign: 'center', color: '#6b7280' }}>
+                  <TrendingUp size={48} style={{ margin: '0 auto 8px', color: '#9ca3af' }} />
+                  <Typography variant="body2">Grafik Pendapatan</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
 
-        <Card className="shadow-sm">
-          <CardHeader className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">Order Terbaru</h3>
-            <Button variant="light" size="sm" className="text-blue-600">
-              Lihat Semua
+        <Card sx={{ boxShadow: 1 }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Order Terbaru
+                </Typography>
+                <Button variant="text" size="small" sx={{ color: '#1976d2' }}>
+                  Lihat Semua
+                </Button>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {ordersData.map((order, index) => (
+                  <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <Avatar sx={{ 
+                      width: 32, 
+                      height: 32, 
+                      fontSize: '0.75rem',
+                      backgroundColor: order.avatarColor.includes('blue') ? '#dbeafe' : 
+                                      order.avatarColor.includes('green') ? '#dcfce7' : '#f3e8ff',
+                      color: order.avatarColor.includes('blue') ? '#1d4ed8' : 
+                             order.avatarColor.includes('green') ? '#16a34a' : '#9333ea'
+                    }}>
+                      {order.avatar}
+                    </Avatar>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {order.id}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {order.customer}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'right' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {order.amount}
+                      </Typography>
+                      <StatusBadge status={order.status} size="sm" />
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
+      </Box>
+
+      <Card sx={{ boxShadow: 1 }}>
+        <CardContent>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Pesanan Terbaru
+            </Typography>
+            <Button 
+              variant="contained"
+              startIcon={<Plus size={16} />}
+              onClick={() => setAddOrderModalOpen(true)}
+            >
+              Tambah Pesanan Baru
             </Button>
-          </CardHeader>
-          <CardBody>
-            <div className="space-y-4">
-              {ordersData.map((order, index) => (
-                <div key={index} className="flex items-center space-x-3">
-                  <div className={`w-8 h-8 ${order.avatarColor} rounded-full flex items-center justify-center`}>
-                    <span className="text-xs font-medium">{order.avatar}</span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{order.id}</p>
-                    <p className="text-xs text-gray-500">{order.customer}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">{order.amount}</p>
-                    <StatusBadge status={order.status} size="sm" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardBody>
-        </Card>
-      </div>
-
-      <Card className="shadow-sm">
-        <CardHeader className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">Pesanan Terbaru</h3>
-          <Button 
-            color="primary" 
-            startContent={<Plus className="w-4 h-4" />}
-            onPress={addOrderModal.onOpen}
-          >
-            Tambah Pesanan Baru
-          </Button>
-        </CardHeader>
-        <CardBody className="p-0">
-          <Table aria-label="Orders table">
-            <TableHeader>
-              <TableColumn>NOMOR PESANAN</TableColumn>
-              <TableColumn>NAMA PELANGGAN</TableColumn>
-              <TableColumn>STATUS</TableColumn>
-              <TableColumn>TOTAL</TableColumn>
-              <TableColumn>TANGGAL</TableColumn>
-            </TableHeader>
+          </Box>
+          
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 600 }}>NOMOR PESANAN</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>NAMA PELANGGAN</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>STATUS</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>TOTAL</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>TANGGAL</TableCell>
+              </TableRow>
+            </TableHead>
             <TableBody>
               {tableData.map((row, index) => (
                 <TableRow key={index}>
@@ -147,37 +205,39 @@ export default function Home() {
               ))}
             </TableBody>
           </Table>
-        </CardBody>
+        </CardContent>
       </Card>
 
       <MyModal
         title="Tambah Pesanan Baru" 
-        onOpen={addOrderModal.onOpen} 
-        isOpen={addOrderModal.isOpen} 
-        onOpenChange={addOrderModal.onOpenChange}
+        onOpen={() => setAddOrderModalOpen(true)} 
+        isOpen={addOrderModalOpen} 
+        onOpenChange={setAddOrderModalOpen}
         size="2xl"
       >
-        <div className="space-y-4">
-          <p className="text-zinc-400">Form tambah pesanan akan ditambahkan di sini</p>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Typography color="text.secondary">
+            Form tambah pesanan akan ditambahkan di sini
+          </Typography>
           
-          <div className="flex gap-2 mt-6">
+          <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
             <Button 
-              color="primary" 
-              className="w-1/2"
-            >
-              <Plus className="w-4 h-4" /> Simpan
-            </Button>
-            <Button 
-              color="danger" 
-              className="w-1/2" 
-              variant="flat"
-              onPress={addOrderModal.onClose}
+              variant="outlined" 
+              onClick={() => setAddOrderModalOpen(false)}
+              sx={{ flex: 1 }}
             >
               Batal
             </Button>
-          </div>
-        </div>
+            <Button 
+              variant="contained" 
+              onClick={() => setAddOrderModalOpen(false)}
+              sx={{ flex: 1 }}
+            >
+              Simpan
+            </Button>
+          </Box>
+        </Box>
       </MyModal>
-    </div>
+    </Box>
   );
 }

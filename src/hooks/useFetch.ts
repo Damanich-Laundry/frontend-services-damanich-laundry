@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { fetchWithAuthClient } from '@/utils/connections';
 
-interface UseFetchOptions {
+export interface UseFetchOptions {
   immediate?: boolean; // Whether to fetch immediately on mount
   dependencies?: any[]; // Dependencies for refetch
 }
 
-interface UseFetchReturn<T> {
+export interface UseFetchReturn<T> {
   data: T | null;
   loading: boolean;
   error: string | null;

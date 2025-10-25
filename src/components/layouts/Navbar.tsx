@@ -3,10 +3,11 @@
 import { 
   Bell, 
   ChevronDown,
-  Menu
+  Menu as MenuIcon
 } from "lucide-react";
-import { Button, Avatar, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
+import { Button, Avatar, Box, Typography, Menu, MenuItem, IconButton } from '@mui/material';
 import { SearchInput } from "@/components/shared";
+import { useState } from "react";
 
 interface NavbarProps {
   pageTitle: string;
@@ -14,70 +15,135 @@ interface NavbarProps {
 }
 
 export default function Navbar({ pageTitle, onMenuToggle }: NavbarProps) {
-  return (
-    <header className="bg-white border-b border-gray-200 px-4 py-4 lg:px-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Button 
-            isIconOnly
-            variant="light"
-            onClick={onMenuToggle}
-            className="lg:hidden"
-          >
-            <Menu className="w-5 h-5 text-gray-600" />
-          </Button>
-          <h1 className="text-xl font-semibold text-gray-900">{pageTitle}</h1>
-        </div>
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
-        <div className="hidden md:flex flex-1 max-w-md mx-8">
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <Box component="header" sx={{ 
+      backgroundColor: 'white', 
+      borderBottom: '1px solid #e5e7eb', 
+      px: { xs: 2, lg: 3 }, 
+      py: 2 
+    }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <IconButton 
+            onClick={onMenuToggle}
+            sx={{ 
+              display: { xs: 'block', lg: 'none' },
+              color: '#6b7280'
+            }}
+          >
+            <MenuIcon size={20} />
+          </IconButton>
+          <Typography variant="h5" sx={{ fontWeight: 600, color: 'text.primary' }}>
+            {pageTitle}
+          </Typography>
+        </Box>
+
+        <Box sx={{ 
+          display: { xs: 'none', md: 'flex' }, 
+          flex: 1, 
+          maxWidth: 'md', 
+          mx: 2 
+        }}>
           <SearchInput 
             placeholder="Cari order, pelanggan..."
             className="w-full"
           />
-        </div>
+        </Box>
 
-        <div className="flex items-center space-x-4">
-          <Button 
-            isIconOnly
-            variant="light"
-            className="relative"
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <IconButton sx={{ position: 'relative' }}>
+            <Bell size={20} style={{ color: '#6b7280' }} />
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 4,
+                right: 4,
+                width: 8,
+                height: 8,
+                backgroundColor: '#ef4444',
+                borderRadius: '50%'
+              }}
+            />
+          </IconButton>
+
+          <Button
+            onClick={handleClick}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              textTransform: 'none',
+              color: '#374151',
+              '&:hover': {
+                backgroundColor: '#f3f4f6'
+              }
+            }}
           >
-            <Bell className="w-5 h-5 text-gray-600" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            <Avatar 
+              sx={{
+                width: 32,
+                height: 32,
+                backgroundColor: '#d1d5db',
+                color: '#6b7280',
+                fontSize: '0.875rem'
+              }}
+            >
+              AU
+            </Avatar>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                fontWeight: 500,
+                display: { xs: 'none', md: 'block' }
+              }}
+            >
+              Admin User
+            </Typography>
+            <ChevronDown size={16} style={{ color: '#9ca3af' }} />
           </Button>
 
-          <Dropdown placement="bottom-end">
-            <DropdownTrigger>
-              <Button 
-                variant="light"
-                className="flex items-center space-x-2"
-              >
-                <Avatar 
-                  name="AU"
-                  size="sm"
-                  className="bg-gray-300 text-gray-600"
-                />
-                <span className="hidden md:block text-sm font-medium text-gray-700">Admin User</span>
-                <ChevronDown className="w-4 h-4 text-gray-500" />
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Profile menu">
-              <DropdownItem key="profile">Profile</DropdownItem>
-              <DropdownItem key="settings">Settings</DropdownItem>
-              <DropdownItem key="logout" className="text-danger" color="danger">
-                Logout
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-      </div>
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleClose}>Settings</MenuItem>
+            <MenuItem onClick={handleClose} sx={{ color: 'error.main' }}>
+              Logout
+            </MenuItem>
+          </Menu>
+        </Box>
+      </Box>
 
-      <div className="md:hidden mt-4">
+      <Box sx={{ 
+        display: { xs: 'block', md: 'none' }, 
+        mt: 2 
+      }}>
         <SearchInput 
           placeholder="Cari order, pelanggan..."
           className="w-full"
         />
-      </div>
-    </header>
+      </Box>
+    </Box>
   );
 }

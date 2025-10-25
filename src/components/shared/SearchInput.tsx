@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@heroui/react";
+import { TextField, InputAdornment } from '@mui/material';
 import { Search } from "lucide-react";
 
 interface SearchInputProps {
@@ -15,14 +15,32 @@ export default function SearchInput({
   onSearch 
 }: SearchInputProps) {
   return (
-    <Input
+    <TextField
       type="text"
       placeholder={placeholder}
-      startContent={<Search className="w-4 h-4 text-gray-400" />}
+      size="small"
+      fullWidth
       className={className}
-      classNames={{
-        input: "text-sm",
-        inputWrapper: "border border-gray-300 hover:border-gray-400 focus-within:border-blue-500"
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <Search size={16} style={{ color: '#9ca3af' }} />
+          </InputAdornment>
+        ),
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          fontSize: '0.875rem',
+          '& fieldset': {
+            borderColor: '#d1d5db',
+          },
+          '&:hover fieldset': {
+            borderColor: '#9ca3af',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: '#3b82f6',
+          },
+        },
       }}
       onChange={(e) => onSearch?.(e.target.value)}
     />

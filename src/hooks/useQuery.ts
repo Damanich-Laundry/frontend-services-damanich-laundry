@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchWithAuthClient } from '@/utils/connections';
 
-interface UseQueryOptions {
+export interface UseQueryOptions {
   enabled?: boolean; // Whether the query should run
   staleTime?: number; // Time in ms before data is considered stale
   cacheTime?: number; // Time in ms to keep data in cache
@@ -10,7 +10,7 @@ interface UseQueryOptions {
   retryDelay?: number; // Delay between retries in ms
 }
 
-interface UseQueryReturn<T> {
+export interface UseQueryReturn<T> {
   data: T | null;
   loading: boolean;
   error: string | null;

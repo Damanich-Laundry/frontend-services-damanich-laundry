@@ -11,7 +11,7 @@ import {
   FileText,
   X
 } from "lucide-react";
-import { Button, Avatar } from "@heroui/react";
+import { Button, Avatar, Box, Typography, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -46,52 +46,79 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         lg:translate-x-0 lg:static lg:z-auto
         w-64
       `}>
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          p: 3, 
+          borderBottom: '1px solid #e5e7eb' 
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Avatar 
-              name="DL" 
-              className="w-8 h-8 bg-blue-600 text-white font-bold text-sm"
-              classNames={{
-                base: "bg-blue-600",
-                name: "text-white font-bold text-sm"
+              sx={{
+                width: 32,
+                height: 32,
+                backgroundColor: '#1976d2',
+                color: 'white',
+                fontSize: '0.875rem',
+                fontWeight: 'bold'
               }}
-            />
-            <h1 className="text-lg font-semibold text-gray-900">Damanich Laundry</h1>
-          </div>
+            >
+              DL
+            </Avatar>
+            <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+              Damanich Laundry
+            </Typography>
+          </Box>
           <Button 
-            isIconOnly
-            variant="light"
             onClick={onToggle}
-            className="lg:hidden"
+            sx={{ 
+              display: { xs: 'block', lg: 'none' },
+              minWidth: 'auto',
+              p: 1
+            }}
           >
-            <X className="w-5 h-5 text-gray-600" />
+            <X size={20} style={{ color: '#6b7280' }} />
           </Button>
-        </div>
+        </Box>
 
-        <nav className="flex-1 p-4">
-          <ul className="space-y-2">
+        <Box sx={{ flex: 1, p: 2 }}>
+          <List sx={{ p: 0 }}>
             {menuItems.map((item, index) => {
               const Icon = item.icon;
               return (
-                <li key={index}>
-                  <Button
-                    variant={item.active ? "solid" : "light"}
-                    className={`
-                      w-full justify-start h-auto px-3 py-2
-                      ${item.active 
-                        ? 'bg-gray-100 text-gray-900' 
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                      }
-                    `}
-                    startContent={<Icon className="w-5 h-5" />}
+                <ListItem key={index} disablePadding sx={{ mb: 0.5 }}>
+                  <ListItemButton
+                    sx={{
+                      borderRadius: 1,
+                      height: 48,
+                      backgroundColor: item.active ? '#1976d2' : 'transparent',
+                      color: item.active ? 'white' : '#374151',
+                      '&:hover': {
+                        backgroundColor: item.active ? '#1565c0' : '#f3f4f6',
+                      },
+                      px: 2,
+                    }}
                   >
-                    <span className="font-medium">{item.label}</span>
-                  </Button>
-                </li>
+                    <ListItemIcon sx={{ 
+                      minWidth: 40,
+                      color: item.active ? 'white' : '#6b7280'
+                    }}>
+                      <Icon size={20} />
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary={item.label}
+                      primaryTypographyProps={{
+                        fontSize: '0.875rem',
+                        fontWeight: item.active ? 600 : 400,
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
               );
             })}
-          </ul>
-        </nav>
+          </List>
+        </Box>
       </div>
     </>
   );

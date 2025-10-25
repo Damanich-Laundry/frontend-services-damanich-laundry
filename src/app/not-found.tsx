@@ -1,25 +1,43 @@
 "use client"
 
-import { Button, Image } from "@heroui/react";
+import { Button, Box, Typography } from '@mui/material';
 import Link from "next/link";
+import Image from "next/image";
 
 export default function NotFound() {
     return (
-        <div className="flex flex-col items-center justify-center mx-auto mt-25 md:mt-17">
-            <div>
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          mx: 'auto', 
+          mt: { xs: 25, md: 17 } 
+        }}>
+            <Box>
                 <Image
-                alt=""
-                src="./assets/not-found.png"
-                width={400}
+                  alt="Page not found"
+                  src="/assets/not-found.png"
+                  width={400}
+                  height={300}
                 />
-            </div>
-            <div className="text-center space-y-4">
-                <h1 className="font-bold text-4xl">Sorry! Page Not Found.</h1>
-                <p>The page you are looking for does not exist.</p>
-                <Button as={Link} href="/">
+            </Box>
+            <Box sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
+                  Sorry! Page Not Found.
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  The page you are looking for does not exist.
+                </Typography>
+                <Button 
+                  component={Link} 
+                  href="/"
+                  variant="contained"
+                  sx={{ alignSelf: 'center', mt: 2 }}
+                >
                     Go to Home
                 </Button>
-            </div>
-        </div>
+            </Box>
+        </Box>
     )
 }

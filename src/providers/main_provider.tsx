@@ -1,14 +1,26 @@
 "use client";
 
 import * as React from "react";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
-import { HeroUIProvider, ToastProvider } from "@heroui/react";
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+});
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <HeroUIProvider>
-            <ToastProvider placement="top-right" />
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
             {children}
-        </HeroUIProvider>
+        </ThemeProvider>
     );
 }
