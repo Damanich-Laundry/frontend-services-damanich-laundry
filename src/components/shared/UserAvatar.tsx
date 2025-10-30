@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar } from "@heroui/react";
+import { Avatar } from '@mui/material';
 
 interface UserAvatarProps {
   name: string;
@@ -24,22 +24,29 @@ export default function UserAvatar({
       .slice(0, 2);
   };
 
-  const sizeClasses = {
-    sm: "w-6 h-6 text-xs",
-    md: "w-8 h-8 text-sm",
-    lg: "w-12 h-12 text-base"
+  const getSize = (size: string) => {
+    switch (size) {
+      case "sm": return 24;
+      case "md": return 32;
+      case "lg": return 48;
+      default: return 32;
+    }
   };
 
   return (
     <Avatar
       src={src}
-      name={getInitials(name)}
-      size={size}
-      className={`${sizeClasses[size]} ${className}`}
-      classNames={{
-        base: "bg-gray-200 text-gray-700",
-        name: "font-medium"
+      sx={{
+        width: getSize(size),
+        height: getSize(size),
+        backgroundColor: '#e5e7eb',
+        color: '#374151',
+        fontSize: size === 'sm' ? '0.75rem' : size === 'lg' ? '1rem' : '0.875rem',
+        fontWeight: 500,
       }}
-    />
+      className={className}
+    >
+      {getInitials(name)}
+    </Avatar>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody } from "@heroui/react";
+import { Card, CardContent, Box, Typography } from '@mui/material';
 import { LucideIcon } from "lucide-react";
 
 interface StatCardProps {
@@ -26,29 +26,52 @@ export default function StatCard({
   trend
 }: StatCardProps) {
   return (
-    <Card className="shadow-sm">
-      <CardBody className="p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <p className="text-sm font-medium text-gray-600">{title}</p>
-            <p className="text-2xl font-bold text-gray-900">{value}</p>
+    <Card sx={{ boxShadow: 1 }}>
+      <CardContent sx={{ p: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+              {title}
+            </Typography>
+            <Typography variant="h4" component="h2" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+              {value}
+            </Typography>
             {subtitle && (
-              <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+              <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                {subtitle}
+              </Typography>
             )}
             {trend && (
-              <p className={`text-xs flex items-center mt-1 ${
-                trend.isPositive ? 'text-green-600' : 'text-red-600'
-              }`}>
-                <span className="mr-1">{trend.isPositive ? '↗' : '↘'}</span>
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  mt: 0.5,
+                  color: trend.isPositive ? 'success.main' : 'error.main'
+                }}
+              >
+                <span style={{ marginRight: 4 }}>{trend.isPositive ? '↗' : '↘'}</span>
                 {trend.value}
-              </p>
+              </Typography>
             )}
-          </div>
-          <div className={`w-12 h-12 ${iconBgColor} rounded-lg flex items-center justify-center`}>
-            <Icon className={`w-6 h-6 ${iconColor}`} />
-          </div>
-        </div>
-      </CardBody>
+          </Box>
+          <Box 
+            sx={{ 
+              width: 48, 
+              height: 48, 
+              borderRadius: 1.5, 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              backgroundColor: iconBgColor.replace('bg-', '').replace('-100', '.light'),
+              color: iconColor.replace('text-', '').replace('-600', '.main')
+            }}
+          >
+            <Icon size={24} />
+          </Box>
+        </Box>
+      </CardContent>
     </Card>
   );
 }

@@ -1,13 +1,13 @@
 import { useState, useCallback } from 'react';
 import { fetchWithAuthClient } from '@/utils/connections';
 
-interface UseMutationOptions {
+export interface UseMutationOptions {
   onSuccess?: (data: any) => void;
   onError?: (error: string) => void;
   onSettled?: () => void;
 }
 
-interface UseMutationReturn<TData = any, TVariables = any> {
+export interface UseMutationReturn<TData = any, TVariables = any> {
   mutate: (variables?: TVariables) => Promise<TData | null>;
   mutateAsync: (variables?: TVariables) => Promise<TData | null>;
   data: TData | null;
