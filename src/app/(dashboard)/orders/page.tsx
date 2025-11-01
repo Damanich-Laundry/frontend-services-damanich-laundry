@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Box, Typography } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import {
   OrdersHeader,
   OrdersFilters,
@@ -13,6 +14,7 @@ import { mockOrders, mockOrdersStats } from '@/datas/dummies';
 type FilterStatus = 'Semua' | 'Menunggu' | 'Dalam Proses' | 'Selesai' | 'Dibatalkan';
 
 const OrdersPage = () => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterStatus>('Semua');
 
@@ -52,8 +54,7 @@ const OrdersPage = () => {
   };
 
   const handleAddOrder = () => {
-    console.log('Add new order');
-    // TODO: Navigate to add order page
+    router.push('/orders/new');
   };
 
   return (
