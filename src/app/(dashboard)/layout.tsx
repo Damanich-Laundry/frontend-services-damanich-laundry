@@ -5,6 +5,7 @@ import React from "react";
 import { useState } from "react";
 import Navbar from "@/components/layouts/Navbar";
 import Sidebar from "@/components/layouts/Sidebar";
+import { withAuth } from "@/components/hoc/withAuth";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -28,4 +29,4 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default Layout;
+export default withAuth(Layout);
