@@ -19,21 +19,31 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
 }
 
-const menuItems = [
-  { icon: BarChart3, label: "Dashboard", active: true },
-  { icon: ShoppingCart, label: "Pesanan", active: false },
-  { icon: Users, label: "Pelanggan", active: false },
-  { icon: Settings, label: "Layanan", active: false },
-  { icon: User, label: "Staff", active: false },
+interface MenuItem {
+  icon: React.ComponentType<{ size?: number }>;
+  label: string;
+  href: string;
+}
+
+const menuItems: MenuItem[] = [
+  { icon: BarChart3, label: "Dashboard", href: "/" },
+  { icon: ShoppingCart, label: "Pesanan", href: "/orders" },
+  { icon: Users, label: "Pelanggan", href: "/customers" },
+  { icon: Settings, label: "Layanan", href: "/services" },
+  { icon: User, label: "Staff", href: "/staffs" },
 ];
 
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
+  const pathname = usePathname();
+
   return (
     <>
       {isOpen && (
@@ -96,16 +106,22 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           <List sx={{ p: 0 }}>
             {menuItems.map((item, index) => {
               const Icon = item.icon;
+              // For root path, match exactly. For other paths, match exactly or if it's a nested route
+              const isActive = item.href === "/" 
+                ? pathname === "/" 
+                : pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <ListItem key={index} disablePadding sx={{ mb: 0.5 }}>
                   <ListItemButton
+                    component={Link}
+                    href={item.href}
                     sx={{
                       borderRadius: 1,
                       height: 48,
-                      backgroundColor: item.active ? "#1976d2" : "transparent",
-                      color: item.active ? "white" : "#374151",
+                      backgroundColor: isActive ? "#1976d2" : "transparent",
+                      color: isActive ? "white" : "#374151",
                       "&:hover": {
-                        backgroundColor: item.active ? "#1565c0" : "#f3f4f6",
+                        backgroundColor: isActive ? "#1565c0" : "#f3f4f6",
                       },
                       px: 2,
                     }}
@@ -113,7 +129,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                     <ListItemIcon
                       sx={{
                         minWidth: 40,
-                        color: item.active ? "white" : "#6b7280",
+                        color: isActive ? "white" : "#6b7280",
                       }}
                     >
                       <Icon size={20} />
@@ -122,7 +138,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                       primary={item.label}
                       primaryTypographyProps={{
                         fontSize: "0.875rem",
-                        fontWeight: item.active ? 600 : 400,
+                        fontWeight: isActive ? 600 : 400,
                       }}
                     />
                   </ListItemButton>
