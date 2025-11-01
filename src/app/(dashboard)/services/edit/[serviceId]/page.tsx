@@ -8,6 +8,7 @@ import ServiceForm from '@/components/modules/services-page/ServiceForm';
 import ServicePreview from '@/components/modules/services-page/ServicePreview';
 import ServiceInfoCard from '@/components/modules/services-page/ServiceInfoCard';
 import { Service } from '@/components/modules/services-page/types';
+import { mockService } from '@/datas/dummies';
 
 const EditServicePage = () => {
   const router = useRouter();
@@ -20,17 +21,13 @@ const EditServicePage = () => {
 
   useEffect(() => {
     // Mock data - replace with actual API call
-    const mockService: Service = {
-      id: serviceId || '1',
-      name: 'Cuci Kering',
-      description: 'Layanan cuci dan pengeringan untuk pakaian sehari-hari dengan deterjen berkualitas',
-      estimatedTime: '2 Hari',
-      pricePerKg: 'Rp 8.000',
-      status: 'Aktif'
-    };
-    setServiceData(mockService);
-    const initialPreview = {
+    const service: Service = {
       ...mockService,
+      id: serviceId || mockService.id
+    };
+    setServiceData(service);
+    const initialPreview = {
+      ...service,
       isPopular: false
     };
     setPreviewData(initialPreview);
