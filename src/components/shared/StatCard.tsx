@@ -57,15 +57,14 @@ export default function StatCard({
             )}
           </Box>
           <Box 
+            className={`${iconBgColor} ${iconColor} rounded-lg flex items-center justify-center`}
             sx={{ 
               width: 48, 
               height: 48, 
               borderRadius: 1.5, 
               display: 'flex', 
               alignItems: 'center', 
-              justifyContent: 'center',
-              backgroundColor: iconBgColor.replace('bg-', '').replace('-100', '.light'),
-              color: iconColor.replace('text-', '').replace('-600', '.main')
+              justifyContent: 'center'
             }}
           >
             <Icon size={24} />
