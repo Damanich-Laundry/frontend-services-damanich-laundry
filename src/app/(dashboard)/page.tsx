@@ -28,12 +28,12 @@ import {
 import { StatCard, StatusBadge } from "@/components/shared";
 import MyModal from "@/components/Modal/MyModal";
 import { useState } from "react";
-import { mockOrders, mockOrderTableData } from "@/datas/dummies";
+import { mockOrdersLegacy, mockOrderTableData } from "@/datas/dummies";
 
 export default function Home() {
   const [addOrderModalOpen, setAddOrderModalOpen] = useState(false);
 
-  const ordersData = mockOrders;
+  const ordersData = mockOrdersLegacy;
   const tableData = mockOrderTableData;
 
   return (

@@ -24,6 +24,9 @@ export default function StatusBadge({
     if (statusLower.includes('baru') || statusLower.includes('new')) {
       return "primary";
     }
+    if (statusLower.includes('menunggu') || statusLower.includes('pending') || statusLower.includes('waiting')) {
+      return "info";
+    }
     if (statusLower.includes('batal') || statusLower.includes('cancelled') || statusLower.includes('nonaktif') || statusLower.includes('inactive')) {
       return "error";
     }

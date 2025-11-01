@@ -2,8 +2,8 @@
 export { mockServices, mockService } from './services';
 
 // Orders
-export { mockOrders, mockOrderTableData } from './orders';
-export type { Order, OrderTableRow } from './orders';
+export { mockOrders, mockOrdersStats, mockOrdersLegacy, mockOrderTableData } from './orders';
+export type { Order, OrdersStatsData, LegacyOrder, OrderTableRow } from './orders';
 
 // Dashboard
 export { mockDashboardStats } from './dashboard';
