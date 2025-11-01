@@ -16,14 +16,15 @@ import {
   InputAdornment,
   Typography
 } from '@mui/material';
-import { X, Plus } from 'lucide-react';
+import { X, Plus, Check } from 'lucide-react';
 import { Service } from './types';
 
 interface ServiceFormProps {
-  initialData?: Partial<Service>;
+  initialData?: Partial<Service> & { isPopular?: boolean };
   onSubmit?: (data: Omit<Service, 'id'> & { isPopular?: boolean }) => void;
   onCancel?: () => void;
   isEditMode?: boolean;
+  onFormChange?: (data: Partial<Service> & { isPopular?: boolean }) => void;
 }
 
 const TIME_UNITS = [
@@ -40,7 +41,8 @@ export default function ServiceForm({
   initialData,
   onSubmit,
   onCancel,
-  isEditMode = false
+  isEditMode = false,
+  onFormChange
 }: ServiceFormProps) {
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
@@ -52,26 +54,54 @@ export default function ServiceForm({
       ? initialData.estimatedTime.split(' ')[1] || 'Hari'
       : 'Hari',
     pricePerKg: initialData?.pricePerKg 
-      ? initialData.pricePerKg.replace('Rp ', '').replace('.', '') || ''
+      ? initialData.pricePerKg.replace('Rp ', '').replace(/\./g, '') || ''
       : '',
     status: initialData?.status || 'Aktif',
-    isPopular: false
+    isPopular: initialData?.isPopular || false
   });
 
   const handleChange = (field: string) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { value: string } }
   ) => {
-    setFormData(prev => ({
-      ...prev,
+    const newFormData = {
+      ...formData,
       [field]: e.target.value
-    }));
+    };
+    setFormData(newFormData);
+    
+    // Emit changes for live preview
+    if (onFormChange) {
+      const previewData: Partial<Service> & { isPopular?: boolean } = {
+        name: newFormData.name,
+        description: newFormData.description,
+        estimatedTime: `${newFormData.estimatedTimeValue} ${newFormData.estimatedTimeUnit}`,
+        pricePerKg: `Rp ${parseInt(newFormData.pricePerKg.replace(/\D/g, '') || '0').toLocaleString('id-ID')}`,
+        status: newFormData.status as 'Aktif' | 'Nonaktif',
+        isPopular: newFormData.isPopular
+      };
+      onFormChange(previewData);
+    }
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
+    const newFormData = {
+      ...formData,
       isPopular: e.target.checked
-    }));
+    };
+    setFormData(newFormData);
+    
+    // Emit changes for live preview
+    if (onFormChange) {
+      const previewData: Partial<Service> & { isPopular?: boolean } = {
+        name: newFormData.name,
+        description: newFormData.description,
+        estimatedTime: `${newFormData.estimatedTimeValue} ${newFormData.estimatedTimeUnit}`,
+        pricePerKg: `Rp ${parseInt(newFormData.pricePerKg.replace(/\D/g, '') || '0').toLocaleString('id-ID')}`,
+        status: newFormData.status as 'Aktif' | 'Nonaktif',
+        isPopular: newFormData.isPopular
+      };
+      onFormChange(previewData);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -98,10 +128,10 @@ export default function ServiceForm({
       <CardContent sx={{ p: 4 }}>
         <Box sx={{ mb: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-            Form Tambah Layanan
+            {isEditMode ? 'Form Edit Layanan' : 'Form Tambah Layanan'}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Lengkapi informasi layanan laundry baru
+            {isEditMode ? 'Perbarui data layanan yang sudah ada' : 'Lengkapi informasi layanan laundry baru'}
           </Typography>
         </Box>
 
@@ -136,10 +166,26 @@ export default function ServiceForm({
               label="Estimasi Waktu"
               type="number"
               value={formData.estimatedTimeValue}
-              onChange={(e) => setFormData(prev => ({ 
-                ...prev, 
-                estimatedTimeValue: parseInt(e.target.value) || 0 
-              }))}
+              onChange={(e) => {
+                const newFormData = {
+                  ...formData,
+                  estimatedTimeValue: parseInt(e.target.value) || 0
+                };
+                setFormData(newFormData);
+                
+                // Emit changes for live preview
+                if (onFormChange) {
+                  const previewData: Partial<Service> & { isPopular?: boolean } = {
+                    name: newFormData.name,
+                    description: newFormData.description,
+                    estimatedTime: `${newFormData.estimatedTimeValue} ${newFormData.estimatedTimeUnit}`,
+                    pricePerKg: `Rp ${parseInt(newFormData.pricePerKg.replace(/\D/g, '') || '0').toLocaleString('id-ID')}`,
+                    status: newFormData.status as 'Aktif' | 'Nonaktif',
+                    isPopular: newFormData.isPopular
+                  };
+                  onFormChange(previewData);
+                }
+              }}
               required
               sx={{ flex: 1 }}
               inputProps={{ min: 1 }}
@@ -150,10 +196,26 @@ export default function ServiceForm({
               <Select
                 value={formData.estimatedTimeUnit}
                 label="Satuan Waktu"
-                onChange={(e) => setFormData(prev => ({ 
-                  ...prev, 
-                  estimatedTimeUnit: e.target.value 
-                }))}
+                onChange={(e) => {
+                  const newFormData = {
+                    ...formData,
+                    estimatedTimeUnit: e.target.value
+                  };
+                  setFormData(newFormData);
+                  
+                  // Emit changes for live preview
+                  if (onFormChange) {
+                    const previewData: Partial<Service> & { isPopular?: boolean } = {
+                      name: newFormData.name,
+                      description: newFormData.description,
+                      estimatedTime: `${newFormData.estimatedTimeValue} ${newFormData.estimatedTimeUnit}`,
+                      pricePerKg: `Rp ${parseInt(newFormData.pricePerKg.replace(/\D/g, '') || '0').toLocaleString('id-ID')}`,
+                      status: newFormData.status as 'Aktif' | 'Nonaktif',
+                      isPopular: newFormData.isPopular
+                    };
+                    onFormChange(previewData);
+                  }
+                }}
               >
                 {TIME_UNITS.map((unit) => (
                   <MenuItem key={unit.value} value={unit.value}>
@@ -188,10 +250,26 @@ export default function ServiceForm({
             <Select
               value={formData.status}
               label="Status Layanan"
-              onChange={(e) => setFormData(prev => ({ 
-                ...prev, 
-                status: e.target.value 
-              }))}
+              onChange={(e) => {
+                const newFormData = {
+                  ...formData,
+                  status: e.target.value
+                };
+                setFormData(newFormData);
+                
+                // Emit changes for live preview
+                if (onFormChange) {
+                  const previewData: Partial<Service> & { isPopular?: boolean } = {
+                    name: newFormData.name,
+                    description: newFormData.description,
+                    estimatedTime: `${newFormData.estimatedTimeValue} ${newFormData.estimatedTimeUnit}`,
+                    pricePerKg: `Rp ${parseInt(newFormData.pricePerKg.replace(/\D/g, '') || '0').toLocaleString('id-ID')}`,
+                    status: newFormData.status as 'Aktif' | 'Nonaktif',
+                    isPopular: newFormData.isPopular
+                  };
+                  onFormChange(previewData);
+                }
+              }}
             >
               {STATUS_OPTIONS.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -232,15 +310,15 @@ export default function ServiceForm({
             <Button
               type="submit"
               variant="contained"
-              startIcon={<Plus size={16} />}
+              startIcon={isEditMode ? <Check size={16} /> : <Plus size={16} />}
               sx={{
-                backgroundColor: '#1976d2',
+                backgroundColor: isEditMode ? '#6b7280' : '#1976d2',
                 '&:hover': {
-                  backgroundColor: '#1565c0'
+                  backgroundColor: isEditMode ? '#4b5563' : '#1565c0'
                 }
               }}
             >
-              {isEditMode ? 'Perbarui Layanan' : 'Tambahkan Layanan'}
+              {isEditMode ? 'Simpan Perubahan' : 'Tambahkan Layanan'}
             </Button>
           </Box>
         </Box>

@@ -66,8 +66,7 @@ const ServicesPage = () => {
   };
 
   const handleEdit = (serviceId: string) => {
-    console.log('Edit service:', serviceId);
-    // TODO: Implement edit functionality
+    router.push(`/services/edit/${serviceId}`);
   };
 
   const handleView = (serviceId: string) => {
