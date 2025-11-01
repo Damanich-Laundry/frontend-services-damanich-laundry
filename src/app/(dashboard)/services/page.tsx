@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import {
   ServicesHeader,
   ServicesStats,
@@ -10,6 +11,7 @@ import {
 } from '@/components/modules/services-page';
 
 const ServicesPage = () => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
 
   const servicesData: Service[] = [
@@ -79,8 +81,7 @@ const ServicesPage = () => {
   };
 
   const handleAddService = () => {
-    console.log('Add new service');
-    // TODO: Implement add functionality
+    router.push('/services/new');
   };
 
   return (
