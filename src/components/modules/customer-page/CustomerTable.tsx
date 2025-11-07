@@ -13,128 +13,119 @@ import {
   Typography,
   IconButton,
   Tooltip,
-  Pagination,
-  Stack
+  Stack,
+  Pagination
 } from '@mui/material';
 import { Edit, Eye, Trash2 } from 'lucide-react';
 import { StatusBadge } from '@/components/shared';
-import { Order } from './types';
+import { Customer } from './types';
 
-interface OrdersTableProps {
-  orders: Order[];
-  onEdit?: (orderId: string) => void;
-  onView?: (orderId: string) => void;
-  onDelete?: (orderId: string) => void;
+interface CustomerTableProps {
+  customer: Customer[];
+  onEdit?: (CustomerId: string) => void;
+  onView?: (CustomerId: string) => void;
+  onDelete?: (CustomerId: string) => void;
 }
 
-const ITEMS_PER_PAGE = 3;
+const ITEMS_PER_PAGE = 5;
 
-export default function OrdersTable({
-  orders,
+export default function CustomerTable({
+  customer,
   onEdit,
   onView,
   onDelete
-}: OrdersTableProps) {
-  const [page, w] = useState(1);
+}: CustomerTableProps) {
+  const [page, setPage] = useState(1)
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
+      setPage(value);
+    };
+
+  const handleEdit = (CustomerId: string) => {
+    onEdit?.(CustomerId);
   };
 
-  const handleEdit = (orderId: string) => {
-    onEdit?.(orderId);
+  const handleView = (CustomerId: string) => {
+    onView?.(CustomerId);
   };
 
-  const handleView = (orderId: string) => {
-    onView?.(orderId);
+  const handleDelete = (CustomerId: string) => {
+    onDelete?.(CustomerId);
   };
 
-  const handleDelete = (orderId: string) => {
-    onDelete?.(orderId);
-  };
-
-  const startIndex = (page - 1) * ITEMS_PER_PAGE;
+   const startIndex = (page - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedOrders = orders.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE);
+  const paginatedCustomer = customer.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(customer.length / ITEMS_PER_PAGE);
 
   return (
     <Card sx={{ boxShadow: 1 }}>
       <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-          Daftar Pesanan
-        </Typography>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: 600 }}>Nomor Pesanan</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>Nama Pelanggan</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Jenis Layanan</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Status Pesanan</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Total Harga</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Tanggal Order</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Nomor Telepon</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Alamat</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Total Transaksi</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Tanggal Terdaftar</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>Aksi</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedOrders.map((order) => (
-              <TableRow key={order.id} hover>
+            {paginatedCustomer.map((customer) => (
+              <TableRow key={customer.id} hover>
                 <TableCell>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    {order.orderNumber}
+                    {customer.name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2" color="text.secondary">
+                    {customer.phone}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">
-                    {order.customerName}
+                    {customer.address}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" color="text.secondary">
-                    {order.serviceType}
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    {customer.totalTransaction}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <StatusBadge 
-                    status={order.status} 
+                    status={customer.registeredDate} 
                     size="sm"
                   />
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    {order.totalPrice}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2" color="text.secondary">
-                    {order.orderDate}
-                  </Typography>
-                </TableCell>
-                <TableCell>
                   <Box sx={{ display: 'flex', gap: 0.5 }}>
-                    <Tooltip title="Lihat">
-                      <IconButton 
-                        size="small"
-                        onClick={() => handleView(order.id)}
-                        sx={{ color: '#6b7280' }}
-                      >
-                        <Eye size={16} />
-                      </IconButton>
-                    </Tooltip>
                     <Tooltip title="Edit">
                       <IconButton 
                         size="small"
-                        onClick={() => handleEdit(order.id)}
-                        sx={{ color: '#6b7280' }}
+                        onClick={() => handleEdit(customer.id)}
+                        sx={{ color: '#6366f1' }}
                       >
                         <Edit size={16} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Lihat Detail">
+                      <IconButton 
+                        size="small"
+                        onClick={() => handleView(customer.id)}
+                        sx={{ color: '#3b82f6' }}
+                      >
+                        <Eye size={16} />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Hapus">
                       <IconButton 
                         size="small"
-                        onClick={() => handleDelete(order.id)}
-                        sx={{ color: '#6b7280' }}
+                        onClick={() => handleDelete(customer.id)}
+                        sx={{ color: '#ef4444' }}
                       >
                         <Trash2 size={16} />
                       </IconButton>
@@ -147,7 +138,7 @@ export default function OrdersTable({
         </Table>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3 }}>
           <Typography variant="body2" color="text.secondary">
-            Menampilkan {startIndex + 1}-{Math.min(endIndex, orders.length)} dari {orders.length} pesanan
+            Menampilkan {startIndex + 1}-{Math.min(endIndex, customer.length)} dari {customer.length} pesanan
           </Typography>
           <Stack spacing={2}>
             <Pagination

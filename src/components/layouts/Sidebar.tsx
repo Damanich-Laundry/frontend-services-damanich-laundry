@@ -7,6 +7,7 @@ import {
   Settings,
   User,
   X,
+  Layers,
 } from "lucide-react";
 import {
   Button,
@@ -37,8 +38,9 @@ const menuItems: MenuItem[] = [
   { icon: BarChart3, label: "Dashboard", href: "/" },
   { icon: ShoppingCart, label: "Pesanan", href: "/orders" },
   { icon: Users, label: "Pelanggan", href: "/customers" },
-  { icon: Settings, label: "Layanan", href: "/services" },
+  { icon: Layers, label: "Layanan", href: "/services" },
   { icon: User, label: "Staff", href: "/staffs" },
+  { icon: Settings, label: "Pengaturan", href: "/settings" },
 ];
 
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
