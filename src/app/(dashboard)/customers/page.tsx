@@ -31,7 +31,7 @@ const CustomerPage = () => {
   };
 
   const handleEdit = (customerId: string) => {
-    router.push(`/customer/edit/${customerId}`);
+    router.push(`/customers/edit/${customerId}`);
   };
 
   const handleView = (customerId: string) => {

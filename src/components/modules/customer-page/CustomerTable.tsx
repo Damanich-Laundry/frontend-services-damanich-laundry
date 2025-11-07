@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Card,
@@ -12,7 +12,9 @@ import {
   TableCell,
   Typography,
   IconButton,
-  Tooltip
+  Tooltip,
+  Stack,
+  Pagination
 } from '@mui/material';
 import { Edit, Eye, Trash2 } from 'lucide-react';
 import { StatusBadge } from '@/components/shared';
@@ -25,12 +27,20 @@ interface CustomerTableProps {
   onDelete?: (CustomerId: string) => void;
 }
 
+const ITEMS_PER_PAGE = 5;
+
 export default function CustomerTable({
   customer,
   onEdit,
   onView,
   onDelete
 }: CustomerTableProps) {
+  const [page, setPage] = useState(1)
+
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+      setPage(value);
+    };
+
   const handleEdit = (CustomerId: string) => {
     onEdit?.(CustomerId);
   };
@@ -42,6 +52,11 @@ export default function CustomerTable({
   const handleDelete = (CustomerId: string) => {
     onDelete?.(CustomerId);
   };
+
+   const startIndex = (page - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedCustomer = customer.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(customer.length / ITEMS_PER_PAGE);
 
   return (
     <Card sx={{ boxShadow: 1 }}>
@@ -58,7 +73,7 @@ export default function CustomerTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {customer.map((customer) => (
+            {paginatedCustomer.map((customer) => (
               <TableRow key={customer.id} hover>
                 <TableCell>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -121,6 +136,32 @@ export default function CustomerTable({
             ))}
           </TableBody>
         </Table>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3 }}>
+          <Typography variant="body2" color="text.secondary">
+            Menampilkan {startIndex + 1}-{Math.min(endIndex, customer.length)} dari {customer.length} pesanan
+          </Typography>
+          <Stack spacing={2}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color="standard"
+              shape="rounded"
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  color: '#6b7280',
+                  '&.Mui-selected': {
+                    backgroundColor: '#6b7280',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#4b5563',
+                    },
+                  },
+                },
+              }}
+            />
+          </Stack>
+        </Box>
       </CardContent>
     </Card>
   );

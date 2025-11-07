@@ -35,7 +35,7 @@ export default function OrdersTable({
   onView,
   onDelete
 }: OrdersTableProps) {
-  const [page, setPage] = useState(1);
+  const [page, w] = useState(1);
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
