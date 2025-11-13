@@ -11,19 +11,20 @@ interface AuthLayoutProps {
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({ 
   children, 
-  imageUrl = "https://placehold.co/800x1000/e0e0e0/ffffff?text=X",
+  imageUrl = "/assets/Logo.png",
   imageAlt = "Auth illustration"
 }) => {
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', bgcolor: '#f5f5f5' }}>
-      {/* Left side - Image placeholder */}
+    <Box sx={{ minHeight: '100vh', display: 'flex' }}>
+      {/* Left side - Logo / Image section */}
       <Box
         sx={{
           display: { xs: 'none', md: 'flex' },
           width: { md: '50%' },
           alignItems: 'center',
           justifyContent: 'center',
-          bgcolor: '#e0e0e0',
+          backgroundColor: 'transparent', // ❌ no gray background
+          position: 'relative',
         }}
       >
         <Box
@@ -31,9 +32,10 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
           src={imageUrl}
           alt={imageAlt}
           sx={{
-            width: '100%',
-            height: '100vh',
-            objectFit: 'cover',
+            width: '70%',
+            height: 'auto',
+            objectFit: 'contain', // ✅ prevents stretching or background fill
+            backgroundColor: 'transparent', // ✅ keep transparent
           }}
         />
       </Box>
@@ -57,4 +59,3 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
 };
 
 export default AuthLayout;
-
