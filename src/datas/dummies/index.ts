@@ -13,3 +13,6 @@ export type { Customer } from './customers';
 export { mockDashboardStats } from './dashboard';
 export type { DashboardStats } from './dashboard';
 
+// Staffs
+export { mockStaffs } from './staffs';
+
