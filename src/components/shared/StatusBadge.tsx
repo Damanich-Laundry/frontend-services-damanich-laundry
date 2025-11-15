@@ -15,7 +15,11 @@ export default function StatusBadge({
   const getStatusColor = (status: string) => {
     const statusLower = status.toLowerCase();
     
-    if (statusLower.includes('selesai') || statusLower.includes('completed')) {
+    // Check for inactive/non-active first to avoid matching "aktif" in "non-aktif"
+    if (statusLower.includes('batal') || statusLower.includes('cancelled') || statusLower.includes('nonaktif') || statusLower.includes('non-aktif') || statusLower.includes('inactive')) {
+      return "error";
+    }
+    if (statusLower.includes('selesai') || statusLower.includes('completed') || statusLower.includes('aktif') || statusLower.includes('active')) {
       return "success";
     }
     if (statusLower.includes('proses') || statusLower.includes('process')) {
@@ -24,8 +28,8 @@ export default function StatusBadge({
     if (statusLower.includes('baru') || statusLower.includes('new')) {
       return "primary";
     }
-    if (statusLower.includes('batal') || statusLower.includes('cancelled')) {
-      return "error";
+    if (statusLower.includes('menunggu') || statusLower.includes('pending') || statusLower.includes('waiting')) {
+      return "info";
     }
     
     return "default";
