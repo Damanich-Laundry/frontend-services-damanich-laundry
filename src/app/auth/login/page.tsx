@@ -1,94 +1,112 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthLayout, LoginForm } from "@/components/modules/auth-pages";
+import MyModal from "@/components/Modal/MyModal"; // pastikan path sesuai
 
-/**
- * Generate a mock JWT token for testing purposes
- * In production, this should come from your authentication API
- */
-const generateMockJWT = (): string => {
-  // JWT Header
-  const header = {
-    alg: "HS256",
-    typ: "JWT",
-  };
-
-  // JWT Payload with user information
-  const payload = {
-    sub: "12345", // User ID
-    email: "user@example.com",
-    name: "Test User",
-    iat: Math.floor(Date.now() / 1000), // Issued at
-    exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60, // Expires in 7 days
-  };
-
-  // Base64 encode header and payload
-  const base64UrlEncode = (obj: any): string => {
-    const base64 = btoa(JSON.stringify(obj));
-    return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-  };
-
-  const encodedHeader = base64UrlEncode(header);
-  const encodedPayload = base64UrlEncode(payload);
-
-  // Create a mock signature (in production, this should be properly signed)
-  const signature = "mock_signature_for_testing_purposes_only";
-
-  // Combine to create JWT
-  return `${encodedHeader}.${encodedPayload}.${signature}`;
-};
-
-/**
- * Set cookie helper function
- */
 const setCookie = (name: string, value: string, days: number = 7) => {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+
   document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
 };
 
 const LoginPage = () => {
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Generate mock JWT token
-    const mockToken = generateMockJWT();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email");
+    const password = formData.get("password");
 
-    // Set token in cookies
-    setCookie("DAMANICH_AUTH_TOKEN", mockToken, 7);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/authentications/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
-    // Redirect to dashboard after successful login
-    router.push("/");
-  };
+      const data = await res.json();
+      console.log("RAW RESPONSE =", data);
 
-  const handleGoogleLogin = () => {
-    // Generate mock JWT token for social login
-    const mockToken = generateMockJWT();
-    setCookie("DAMANICH_AUTH_TOKEN", mockToken, 7);
-    router.push("/");
-  };
+      if (!res.ok) {
+        setErrorMessage(data.message || "Login gagal.");
+        setErrorModalOpen(true);
+        return;
+      }
 
-  const handleAppleLogin = () => {
-    // Generate mock JWT token for social login
-    const mockToken = generateMockJWT();
-    setCookie("DAMANICH_AUTH_TOKEN", mockToken, 7);
-    router.push("/");
+      const accessToken = data?.tokens?.accessToken;
+      const refreshToken = data?.tokens?.refreshToken;
+
+      if (!accessToken) {
+        setErrorMessage("Token tidak ditemukan dalam respons API.");
+        setErrorModalOpen(true);
+        return;
+      }
+
+      setCookie("ACCESS_TOKEN", accessToken, 7);
+      setCookie("REFRESH_TOKEN", refreshToken, 7);
+
+      // Tampilkan modal sukses
+      setSuccessModalOpen(true);
+
+      // Redirect setelah 1,5 detik
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Terjadi kesalahan server.");
+      setErrorModalOpen(true);
+    }
   };
 
   return (
-    <AuthLayout imageUrl="/assets/Logo.png" imageAlt="Login illustration">
-      <LoginForm
-        onSubmit={handleSubmit}
-        onGoogleLogin={handleGoogleLogin}
-        onAppleLogin={handleAppleLogin}
-        forgotPasswordLink="/auth/forgot-password"
-        signUpLink="#"
-      />
-    </AuthLayout>
+    <>
+      <AuthLayout imageUrl="/assets/Logo.png" imageAlt="Login illustration">
+        <LoginForm
+          onSubmit={handleSubmit}
+          forgotPasswordLink="/auth/forgot-password"
+          signUpLink="#"
+          onGoogleLogin={() => alert("Google login belum setup")}
+          onAppleLogin={() => alert("Apple login belum setup")}
+        />
+      </AuthLayout>
+
+      {/* Modal sukses */}
+      <MyModal
+        title="Login Berhasil"
+        isOpen={successModalOpen}
+        onOpen={() => setSuccessModalOpen(true)}
+        onOpenChange={setSuccessModalOpen}
+        size="sm"
+      >
+        <p style={{ fontSize: 16 }}>Anda berhasil masuk. Mengarahkan ke dashboard...</p>
+      </MyModal>
+
+      {/* Modal gagal */}
+      <MyModal
+        title="Login Gagal"
+        isOpen={errorModalOpen}
+        onOpen={() => setErrorModalOpen(true)}
+        onOpenChange={setErrorModalOpen}
+        size="sm"
+      >
+        <p style={{ fontSize: 16, color: "red" }}>{errorMessage}</p>
+      </MyModal>
+    </>
   );
 };
 
