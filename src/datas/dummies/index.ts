@@ -7,7 +7,7 @@ export type { Order, OrdersStatsData, LegacyOrder, OrderTableRow } from './order
 
 // Customers
 export { mockCustomers } from './customers';
-export type { Customer } from './customers';
+export type { Customer } from '@/components/modules/customer-page';
 
 // Dashboard
 export { mockDashboardStats } from './dashboard';
