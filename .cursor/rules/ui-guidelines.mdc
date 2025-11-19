@@ -1,0 +1,16 @@
+---
+description: UI composition, styling, and component conventions
+globs: [
+  "src/components/**/*",
+  "src/app/**/*.tsx"
+]
+alwaysApply: false
+---
+
+# UI & Styling Guidelines
+
+- Build UIs with MUI v7 primitives plus Tailwind utility classes where helpful. Keep the custom theme (rounded corners, shadowless surfaces) in mind and prefer theme tokens (`theme.palette.primary.main`, etc.) over hardcoded colors unless copying existing design language.
+- Shared building blocks reside in `src/components/shared` (e.g., `SearchInput`, `StatCard`, `StatusBadge`). Reuse them before introducing duplicates.
+- Complex pages are composed by module folders (e.g., `components/modules/orders-page`). Add new subcomponents there to keep domain logic grouped.
+- For modals, reuse `src/components/Modal/MyModal.tsx`. It standardizes size props and close affordances; do not instantiate MUI `Dialog` directly unless a requirement deviates significantly.
+- Dummy data can be imported from `src/datas/dummies` for UI development, but clearly mark future API touchpoints with TODO comments to ease backend integration.

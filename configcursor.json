@@ -1,0 +1,126 @@
+{
+  "project": {
+    "name": "frontend-services-damanich-laundry",
+    "description": "Next.js 15 App Router frontend for Damanich Laundry operations dashboard and auth flows.",
+    "packageManager": "npm",
+    "scripts": {
+      "dev": "next dev --turbopack",
+      "build": "next build --turbopack",
+      "start": "next start",
+      "lint": "eslint"
+    },
+    "env": [
+      "NEXT_PUBLIC_BASE_API"
+    ],
+    "aliases": {
+      "@/*": "./src/*"
+    }
+  },
+  "stack": {
+    "runtime": "Next.js 15 (App Router)",
+    "language": "TypeScript",
+    "ui": [
+      "Material UI v7",
+      "Tailwind utility classes"
+    ],
+    "state": "React hooks (useState/useEffect/useMemo)",
+    "dataLayer": "Axios apiClient with cookie-based JWT auth"
+  },
+  "routing": {
+    "rootLayout": "src/app/layout.tsx",
+    "providers": "src/providers/main_provider.tsx",
+    "segments": {
+      "(dashboard)": {
+        "layout": "src/app/(dashboard)/layout.tsx (wrapped with withAuth HOC)",
+        "children": [
+          "/ (dashboard landing)",
+          "/customers (+ new/edit/[id])",
+          "/orders (+ new/edit/[id])",
+          "/services (+ new/edit/[id])",
+          "/staffs (+ new/edit/[id])",
+          "/settings"
+        ]
+      },
+      "auth": {
+        "layout": "src/app/auth/layout.tsx",
+        "children": [
+          "/auth/login",
+          "/auth/forgot-password"
+        ]
+      }
+    }
+  },
+  "modules": [
+    {
+      "name": "Auth Guard + Hooks",
+      "paths": [
+        "src/hooks/useAuth.ts",
+        "src/components/hoc/withAuth.tsx",
+        "src/hooks/useLogin.ts",
+        "src/services/authService.ts"
+      ],
+      "flow": [
+        "useLogin calls authService.login -> apiClient -> BASE_API/auth/login",
+        "Tokens persisted to cookies (DAMANICH_AUTH_TOKEN / DAMANICH_REFRESH_TOKEN)",
+        "useAuth polls cookies, decodes JWT, exposes auth state",
+        "withAuth HOC redirects unauthenticated users to /auth/login"
+      ]
+    },
+    {
+      "name": "API Layer",
+      "paths": [
+        "src/lib/environment.ts",
+        "src/lib/apiClient.ts"
+      ],
+      "flow": [
+        "BASE_API derived from NEXT_PUBLIC_BASE_API",
+        "apiClient attaches JWT from cookies on each request",
+        "401 responses purge cookies and navigate to /auth/login"
+      ]
+    },
+    {
+      "name": "Dashboard UI Modules",
+      "paths": [
+        "src/components/layouts/*",
+        "src/components/modules/**",
+        "src/components/shared/**",
+        "src/components/Modal/MyModal.tsx"
+      ],
+      "notes": "Page-level components compose smaller module components (tables, forms, stats, headers). MyModal wraps MUI Dialog for consistent modals."
+    },
+    {
+      "name": "Mock Data Sources",
+      "paths": [
+        "src/datas/dummies/**"
+      ],
+      "notes": "Provides placeholder data for orders, customers, services, staffs, and dashboard stats. Replace with real API integration later."
+    }
+  ],
+  "dataFlows": [
+    {
+      "name": "Dashboard Overview",
+      "description": "src/app/(dashboard)/page.tsx renders stat cards, weekly revenue placeholder, latest orders list, and modal for adding orders using mockOrdersLegacy + mockOrderTableData."
+    },
+    {
+      "name": "CRUD Pages",
+      "description": "Each domain (customers, orders, services, staffs) has list (/), create (/new), and edit (/edit/[id]) screens leveraging module components (forms/tables) and dummy data. Router navigation handles success/cancel actions."
+    },
+    {
+      "name": "Order Creation Flow",
+      "description": "src/app/(dashboard)/orders/new/page.tsx wires OrderForm ref, uses mockCustomers/mockServices for selects, and submits to handleSubmit -> TODO placeholder for API -> redirect to /orders."
+    }
+  ],
+  "utilities": [
+    {
+      "path": "src/utils/date.ts",
+      "purpose": "Parses human-readable (including Indonesian months) dates into ISO YYYY-MM-DD strings for consistent form/table display."
+    }
+  ],
+  "indexingNotes": [
+    "Prioritize indexing src/app, src/components, src/hooks, src/services, src/datas, src/lib, and src/utils for code understanding.",
+    "node_modules, build artifacts, and public assets can be skipped (already ignored via git).",
+    "All business logic currently lives client-side; there is no server route.",
+    "Replace mock data with API calls by swapping datasource imports without touching UI modules."
+  ]
+}
+
