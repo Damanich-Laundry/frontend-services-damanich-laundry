@@ -26,13 +26,16 @@ export interface ServiceDetailResponse {
   errors?: unknown;
 }
 
-export interface UpdateServicePayload {
+interface ServicePayload {
   service_name: string;
   service_type: string;
   unit: string;
   price_per_unit: number;
   duration_hours: number;
 }
+
+export type UpdateServicePayload = ServicePayload;
+export type CreateServicePayload = ServicePayload;
 
 export const serviceService = {
   async getServices(): Promise<ServiceRecord[]> {
@@ -53,6 +56,14 @@ export const serviceService = {
   ): Promise<ServiceRecord> {
     const { data } = await apiClient.patch<ServiceDetailResponse>(
       `/services/${serviceId}`,
+      payload
+    );
+    return data.data;
+  },
+
+  async createService(payload: CreateServicePayload): Promise<ServiceRecord> {
+    const { data } = await apiClient.post<ServiceDetailResponse>(
+      '/services',
       payload
     );
     return data.data;
