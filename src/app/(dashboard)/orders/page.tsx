@@ -39,8 +39,7 @@ const OrdersPage = () => {
   }, [searchQuery, activeFilter]);
 
   const handleEdit = (orderId: string) => {
-    console.log('Edit order:', orderId);
-    // TODO: Implement edit functionality
+    router.push(`/orders/edit/${orderId}`);
   };
 
   const handleView = (orderId: string) => {

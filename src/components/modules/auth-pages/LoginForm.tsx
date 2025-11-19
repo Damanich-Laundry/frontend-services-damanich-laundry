@@ -45,6 +45,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         {/* Email field */}
         <TextField
           fullWidth
+          name="email" 
           label="Email Address"
           placeholder="Placeholder"
           variant="outlined"
@@ -55,6 +56,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         {/* Password field */}
         <TextField
           fullWidth
+          name="password"  
           label="Password"
           type="password"
           placeholder="Placeholder"

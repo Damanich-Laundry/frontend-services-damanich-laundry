@@ -1,0 +1,19 @@
+---
+description: Authentication and API usage guidelines
+globs: [
+  "src/hooks/**/*",
+  "src/services/**/*",
+  "src/lib/**/*",
+  "src/components/hoc/**/*",
+  "src/app/**"
+]
+alwaysApply: false
+---
+
+# Auth & API Rules
+
+- JWT tokens live in the cookies `DAMANICH_AUTH_TOKEN` and `DAMANICH_REFRESH_TOKEN`. Only touch them through the helpers in `useLogin`, `useAuth`, or `authService.logout` to avoid diverging behavior.
+- `apiClient` (axios) already injects the `Authorization` header and centralizes 401 handling. Reuse it for every backend call; never create ad-hoc axios instances or fetch calls.
+- Use `useAuth` inside components that require user info (id, email, role). The hook decodes the JWT client-side and periodically refreshes state; do not duplicate its logic.
+- Guard client routes by wrapping layouts/pages with `withAuth`. The HOC handles redirecting to `/auth/login` and provides a consistent loading fallback.
+- When adding API mutations, surface success/failure via the shared `MyModal` component or inline MUI alerts, and plan to replace `mock*` data sources with the real responses.

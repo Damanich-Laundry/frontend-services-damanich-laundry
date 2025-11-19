@@ -7,6 +7,7 @@ import {
   Settings,
   User,
   X,
+  Layers,
 } from "lucide-react";
 import {
   Button,
@@ -21,6 +22,7 @@ import {
 } from "@mui/material";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -37,8 +39,9 @@ const menuItems: MenuItem[] = [
   { icon: BarChart3, label: "Dashboard", href: "/" },
   { icon: ShoppingCart, label: "Pesanan", href: "/orders" },
   { icon: Users, label: "Pelanggan", href: "/customers" },
-  { icon: Settings, label: "Layanan", href: "/services" },
+  { icon: Layers, label: "Layanan", href: "/services" },
   { icon: User, label: "Staff", href: "/staffs" },
+  { icon: Settings, label: "Pengaturan", href: "/settings" },
 ];
 
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
@@ -71,18 +74,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-            <Avatar
-              sx={{
-                width: 32,
-                height: 32,
-                backgroundColor: "#1976d2",
-                color: "white",
-                fontSize: "0.875rem",
-                fontWeight: "bold",
-              }}
-            >
-              DL
-            </Avatar>
+            <Image
+              src="/assets/Logo.png"
+              alt="Logo"
+              width={80}
+              height={80}
+            />
             <Typography
               variant="h6"
               sx={{ fontWeight: 600, color: "text.primary" }}

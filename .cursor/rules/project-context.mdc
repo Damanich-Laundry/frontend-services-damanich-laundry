@@ -1,0 +1,13 @@
+---
+description: High-level context for Damanich Laundry frontend project
+globs: "*"
+alwaysApply: true
+---
+
+# Project Context
+
+- App uses Next.js 15 App Router with React 19, TypeScript, and a custom MUI 7 theme defined in `src/providers/main_provider.tsx`. Apply `use client` pragmas to any component using hooks or browser-only APIs.
+- Package scripts: `npm run dev` (Next + Turbopack), `npm run build`, `npm run start`, `npm run lint`. Prefer npm; lockfile is `package-lock.json`.
+- Source layout lives entirely under `src/`. Respect the `@/*` alias (`tsconfig.json`) which maps to `./src/*`—never use long relative paths when `@/` is available.
+- Routing overview: `src/app/layout.tsx` is the global root; `(dashboard)` segment wraps protected pages with `withAuth`, `Navbar`, and `Sidebar`. `auth` segment renders standalone auth screens via `AuthLayout`.
+- Mock data resides in `src/datas/dummies`. Until real APIs exist, keep using these modules for tables/forms and stub network mutations with TODOs.

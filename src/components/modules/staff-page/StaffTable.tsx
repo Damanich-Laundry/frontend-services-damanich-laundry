@@ -13,128 +13,125 @@ import {
   Typography,
   IconButton,
   Tooltip,
-  Pagination,
-  Stack
+  Stack,
+  Pagination
 } from '@mui/material';
 import { Edit, Eye, Trash2 } from 'lucide-react';
 import { StatusBadge } from '@/components/shared';
-import { Order } from './types';
+import { Staff } from './types';
 
-interface OrdersTableProps {
-  orders: Order[];
-  onEdit?: (orderId: string) => void;
-  onView?: (orderId: string) => void;
-  onDelete?: (orderId: string) => void;
+interface StaffTableProps {
+  staff: Staff[];
+  onEdit?: (staffId: string) => void;
+  onView?: (staffId: string) => void;
+  onDelete?: (staffId: string) => void;
 }
 
-const ITEMS_PER_PAGE = 3;
+const ITEMS_PER_PAGE = 5;
 
-export default function OrdersTable({
-  orders,
+export default function StaffTable({
+  staff,
   onEdit,
   onView,
   onDelete
-}: OrdersTableProps) {
-  const [page, w] = useState(1);
+}: StaffTableProps) {
+  const [page, setPage] = useState(1)
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
+      setPage(value);
+    };
+
+  const handleEdit = (staffId: string) => {
+    onEdit?.(staffId);
   };
 
-  const handleEdit = (orderId: string) => {
-    onEdit?.(orderId);
+  const handleView = (staffId: string) => {
+    onView?.(staffId);
   };
 
-  const handleView = (orderId: string) => {
-    onView?.(orderId);
+  const handleDelete = (staffId: string) => {
+    onDelete?.(staffId);
   };
 
-  const handleDelete = (orderId: string) => {
-    onDelete?.(orderId);
-  };
-
-  const startIndex = (page - 1) * ITEMS_PER_PAGE;
+   const startIndex = (page - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedOrders = orders.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE);
+  const paginatedStaff = staff.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(staff.length / ITEMS_PER_PAGE);
 
   return (
     <Card sx={{ boxShadow: 1 }}>
       <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-          Daftar Pesanan
-        </Typography>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: 600 }}>Nomor Pesanan</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Nama Pelanggan</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Jenis Layanan</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Status Pesanan</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Total Harga</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Tanggal Order</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Nama Staff</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Posisi</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Nomor Telepon</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Shift</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Tanggal Bergabung</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>Aksi</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedOrders.map((order) => (
-              <TableRow key={order.id} hover>
+            {paginatedStaff.map((staff) => (
+              <TableRow key={staff.id} hover>
                 <TableCell>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    {order.orderNumber}
+                    {staff.name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2" color="text.secondary">
+                    {staff.position}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2">
-                    {order.customerName}
+                    {staff.phone}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" color="text.secondary">
-                    {order.serviceType}
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    {staff.shift}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <StatusBadge 
-                    status={order.status} 
+                    status={staff.status} 
                     size="sm"
                   />
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    {order.totalPrice}
-                  </Typography>
-                </TableCell>
-                <TableCell>
                   <Typography variant="body2" color="text.secondary">
-                    {order.orderDate}
+                    {staff.joinDate}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', gap: 0.5 }}>
-                    <Tooltip title="Lihat">
-                      <IconButton 
-                        size="small"
-                        onClick={() => handleView(order.id)}
-                        sx={{ color: '#6b7280' }}
-                      >
-                        <Eye size={16} />
-                      </IconButton>
-                    </Tooltip>
                     <Tooltip title="Edit">
                       <IconButton 
                         size="small"
-                        onClick={() => handleEdit(order.id)}
-                        sx={{ color: '#6b7280' }}
+                        onClick={() => handleEdit(staff.id)}
+                        sx={{ color: '#6366f1' }}
                       >
                         <Edit size={16} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Lihat Detail">
+                      <IconButton 
+                        size="small"
+                        onClick={() => handleView(staff.id)}
+                        sx={{ color: '#3b82f6' }}
+                      >
+                        <Eye size={16} />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Hapus">
                       <IconButton 
                         size="small"
-                        onClick={() => handleDelete(order.id)}
-                        sx={{ color: '#6b7280' }}
+                        onClick={() => handleDelete(staff.id)}
+                        sx={{ color: '#ef4444' }}
                       >
                         <Trash2 size={16} />
                       </IconButton>
@@ -147,7 +144,7 @@ export default function OrdersTable({
         </Table>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3 }}>
           <Typography variant="body2" color="text.secondary">
-            Menampilkan {startIndex + 1}-{Math.min(endIndex, orders.length)} dari {orders.length} pesanan
+            Menampilkan {startIndex + 1}-{Math.min(endIndex, staff.length)} dari {staff.length} staff
           </Typography>
           <Stack spacing={2}>
             <Pagination
