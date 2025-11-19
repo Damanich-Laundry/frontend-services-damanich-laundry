@@ -4,6 +4,7 @@ export { useCustomers } from './useCustomers';
 export { useCreateCustomer } from './useCreateCustomer';
 export { useCustomerDetail } from './useCustomerDetail';
 export { useUpdateCustomer } from './useUpdateCustomer';
+export { useServices } from './useServices';
 // export { useUsers } from './useUsers';
 
 // Re-export types for convenience
@@ -13,4 +14,5 @@ export type { UseCustomersReturn } from './useCustomers';
 export type { UseCreateCustomerReturn } from './useCreateCustomer';
 export type { UseCustomerDetailReturn } from './useCustomerDetail';
 export type { UseUpdateCustomerReturn } from './useUpdateCustomer';
+export type { UseServicesReturn } from './useServices';
 // export type { UseUsersReturn } from './useUsers';

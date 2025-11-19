@@ -1,27 +1,16 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Skeleton,
-  Typography,
-} from "@mui/material";
+import React, { useCallback, useMemo, useState } from "react";
+import { Alert, Box, Button, Card, CardContent, Skeleton, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { isAxiosError } from "axios";
 import {
   ServicesHeader,
   ServicesStats,
   ServicesTable,
   type Service,
 } from "@/components/modules/services-page";
-import {
-  serviceService,
-  type ServiceRecord,
-} from "@/services/serviceService";
+import { useServices } from "@/hooks";
+import { type ServiceRecord } from "@/services/serviceService";
 
 const formatCurrencyIDR = (value: number) =>
   new Intl.NumberFormat("id-ID", {
@@ -64,22 +53,6 @@ const transformServiceRecord = (record: ServiceRecord): Service => ({
   createdAt: record.createdAt,
   updatedAt: record.updatedAt,
 });
-
-const getErrorMessage = (error: unknown) => {
-  if (isAxiosError(error)) {
-    const apiMessage =
-      (error.response?.data as { message?: string })?.message;
-    if (apiMessage) {
-      return apiMessage;
-    }
-  }
-
-  if (error instanceof Error) {
-    return error.message;
-  }
-
-  return "Gagal memuat layanan. Coba lagi.";
-};
 
 const STATS_SKELETON_KEYS = ["total", "active", "inactive", "popular"];
 const TABLE_SKELETON_ROW_KEYS = ["row-0", "row-1", "row-2", "row-3", "row-4", "row-5"];
@@ -135,28 +108,12 @@ const EmptyStateCard = ({ message }: { message: string }) => (
 const ServicesPageClient = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [services, setServices] = useState<Service[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { services: serviceRecords, loading: isLoading, error, refetch } = useServices();
 
-  const fetchServices = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const records = await serviceService.getServices();
-      const normalized = records.map(transformServiceRecord);
-      setServices(normalized);
-    } catch (err) {
-      setError(getErrorMessage(err));
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchServices();
-  }, [fetchServices]);
+  const services = useMemo(
+    () => serviceRecords.map(transformServiceRecord),
+    [serviceRecords]
+  );
 
   const filteredServices = useMemo(
     () =>
@@ -221,7 +178,7 @@ const ServicesPageClient = () => {
         <Alert
           severity="error"
           action={
-            <Button color="inherit" size="small" onClick={fetchServices}>
+            <Button color="inherit" size="small" onClick={refetch}>
               Coba lagi
             </Button>
           }
