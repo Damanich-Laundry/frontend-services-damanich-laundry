@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { ArrowLeft } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import CustomerForm from '@/components/modules/customer-page/CustomerForm';
+import CustomerForm, { type CustomerFormValues } from '@/components/modules/customer-page/CustomerForm';
 import { mockCustomers } from '@/datas/dummies';
 import { Customer } from '@/components/modules/customer-page/types';
 
@@ -18,7 +18,7 @@ const EditCustomerPage = () => {
     return mockCustomers.find((c) => c.id === customerId);
   }, [customerId]);
 
-  const handleSubmit = (data: Omit<Customer, 'id'>) => {
+  const handleSubmit = (data: CustomerFormValues) => {
     console.log('Updated customer data:', { id: customerId, ...data });
     router.push('/customers');
   };

@@ -7,71 +7,75 @@ import {
     CardContent,
     TextField,
     Button,
-    InputAdornment,
     Typography
 } from '@mui/material';
-import { X, Plus, Check, Calendar } from 'lucide-react';
+import { X, Plus, Check } from 'lucide-react';
 import { Customer } from './types';
 
-interface CustomerFormProps {
-    initialData?: Partial<Customer>;
-    onSubmit?: (data: Omit<Customer, 'id'>) => void;
-    onCancel?: () => void;
-    isEditMode?: boolean;
-    onFormChange?: (data: Partial<Customer>) => void;
+export interface CustomerFormValues {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
 }
 
+interface CustomerFormProps {
+  initialData?: Partial<Customer>;
+  onSubmit?: (data: CustomerFormValues) => void;
+  onCancel?: () => void;
+  isEditMode?: boolean;
+  onFormChange?: (data: Partial<Customer>) => void;
+  loading?: boolean;
+}
 
 export default function CustomerForm({
-    initialData,
-    onSubmit,
-    onCancel,
-    isEditMode = false,
-    onFormChange
+  initialData,
+  onSubmit,
+  onCancel,
+  isEditMode = false,
+  onFormChange,
+  loading = false
 }: CustomerFormProps) {
-    const [formData, setFormData] = useState({
-        name: initialData?.name || '',
-        phone: initialData?.phone || '',
-        address: initialData?.address || '',
-        registeredDate: initialData?.registeredDate || '',
-        totalTransaction: initialData?.totalTransaction || '',
-    });
+  const [formData, setFormData] = useState({
+    name: initialData?.name || '',
+    email: initialData?.email || '',
+    phone: initialData?.phone || '',
+    address: initialData?.address || '',
+  });
 
-    const handleChange = (field: string) => (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { value: string } }
-    ) => {
-        const newFormData = {
-            ...formData,
-            [field]: e.target.value
-        };
-        setFormData(newFormData);
+  const handleChange = (field: string) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { value: string } }
+  ) => {
+    const newFormData = {
+      ...formData,
+      [field]: e.target.value
+    };
+    setFormData(newFormData);
 
-        if (onFormChange) {
-            const previewData: Partial<Customer> = {
-                name: newFormData.name,
-                phone: newFormData.phone,
-                address: newFormData.address,
-                registeredDate: newFormData.registeredDate,
-                totalTransaction: newFormData.totalTransaction,
-            };
-            onFormChange(previewData);
-        }
+    if (onFormChange) {
+      const previewData: Partial<Customer> = {
+        name: newFormData.name,
+        phone: newFormData.phone,
+        address: newFormData.address,
+        email: newFormData.email,
+      };
+      onFormChange(previewData);
+    }
+  };
+
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const customerData: CustomerFormValues = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
     };
 
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const customerData: Omit<Customer, 'id'> = {
-            name: formData.name,
-            phone: formData.phone,
-            address: formData.address,
-            registeredDate: formData.registeredDate,
-            totalTransaction: formData.totalTransaction,
-        };
-
-        onSubmit?.(customerData);
-    };
+    onSubmit?.(customerData);
+  };
 
     return (
         <Card sx={{ boxShadow: 1 }}>
@@ -91,6 +95,17 @@ export default function CustomerForm({
                         placeholder="Contoh: Rama Najibah"
                         value={formData.name}
                         onChange={handleChange('name')}
+                        fullWidth
+                        required
+                        variant="outlined"
+                    />
+
+                    <TextField
+                        label="Email"
+                        placeholder="Contoh: nama@example.com"
+                        value={formData.email}
+                        onChange={handleChange('email')}
+                        type="email"
                         fullWidth
                         required
                         variant="outlined"
@@ -119,49 +134,6 @@ export default function CustomerForm({
                         variant="outlined"
                     />
 
-                    <TextField
-                        label="Total Transaksi"
-                        placeholder="Contoh: Rp 150.000"
-                        value={formData.totalTransaction}
-                        onChange={(e) => {
-                            // simple currency normalization to 'Rp x.xxx'
-                            const raw = (e.target.value || '').toString();
-                            const digits = raw.replace(/\D/g, '');
-                            const formatted = digits
-                                ? `Rp ${parseInt(digits, 10).toLocaleString('id-ID')}`
-                                : '';
-                            handleChange('totalTransaction')({ target: { value: formatted } });
-                        }}
-                        fullWidth
-                        required
-                        variant="outlined"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    {/* visual prefix; value already includes Rp */}
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-
-                    <TextField
-                        label="Tanggal Daftar"
-                        type="date"
-                        value={formData.registeredDate}
-                        onChange={handleChange('registeredDate')}
-                        fullWidth
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Calendar size={16} style={{ color: '#9ca3af' }} />
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-
                     {/* Action Buttons */}
                     <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
                         <Button
@@ -183,6 +155,7 @@ export default function CustomerForm({
                             type="submit"
                             variant="contained"
                             startIcon={isEditMode ? <Check size={16} /> : <Plus size={16} />}
+                            disabled={loading}
                             sx={{
                                 backgroundColor: isEditMode ? '#6b7280' : '#1976d2',
                                 '&:hover': {
@@ -190,7 +163,7 @@ export default function CustomerForm({
                                 }
                             }}
                         >
-                            {isEditMode ? 'Simpan Perubahan' : 'Tambahkan Pelanggan'}
+                            {loading ? 'Menyimpan...' : isEditMode ? 'Simpan Perubahan' : 'Tambahkan Pelanggan'}
                         </Button>
                     </Box>
                 </Box>
@@ -198,4 +171,3 @@ export default function CustomerForm({
         </Card>
     );
 }
-

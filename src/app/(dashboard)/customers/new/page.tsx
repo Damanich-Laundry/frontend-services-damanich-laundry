@@ -1,17 +1,28 @@
 "use client";
 
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Alert, Box, Typography, Button } from '@mui/material';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import CustomerForm from '@/components/modules/customer-page/CustomerForm';
+import CustomerForm, { type CustomerFormValues } from '@/components/modules/customer-page/CustomerForm';
+import { useCreateCustomer } from '@/hooks';
 
 const CreateCustomerPage = () => {
   const router = useRouter();
+  const { createCustomer, loading, error } = useCreateCustomer();
 
-  const handleSubmit = (data: any) => {
-    console.log('Customer data to submit:', data);
-    router.push('/customers');
+  const handleSubmit = async (data: CustomerFormValues) => {
+    try {
+      await createCustomer({
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        address: data.address,
+      });
+      router.push('/customers');
+    } catch {
+      // Error already handled inside the hook, remain on page
+    }
   };
 
   const handleCancel = () => {
@@ -25,6 +36,9 @@ const CreateCustomerPage = () => {
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
             Tambah Pelanggan Baru
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Masukkan informasi detail pelanggan untuk kebutuhan transaksi laundry.
           </Typography>
         </Box>
         <Button
@@ -44,10 +58,17 @@ const CreateCustomerPage = () => {
         </Button>
       </Box>
 
+      {error && (
+        <Alert severity="error">
+          {error}
+        </Alert>
+      )}
+
       {/* Form Card */}
       <CustomerForm
         onSubmit={handleSubmit}
         onCancel={handleCancel}
+        loading={loading}
       />
     </Box>
   );

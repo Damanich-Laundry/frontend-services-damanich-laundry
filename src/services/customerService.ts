@@ -20,10 +20,29 @@ export interface CustomersResponse {
   errors?: unknown;
 }
 
+export interface CustomerDetailResponse {
+  success: boolean;
+  message: string;
+  data: CustomerRecord;
+  errors?: unknown;
+}
+
+export interface CreateCustomerPayload {
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+}
+
 export const customerService = {
   async getCustomers(): Promise<CustomerRecord[]> {
     const { data } = await apiClient.get<CustomersResponse>('/customers');
     return data.data ?? [];
+  },
+
+  async createCustomer(payload: CreateCustomerPayload): Promise<CustomerRecord> {
+    const { data } = await apiClient.post<CustomerDetailResponse>('/customers', payload);
+    return data.data;
   },
 };
 
