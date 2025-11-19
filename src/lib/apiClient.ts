@@ -43,3 +43,19 @@ apiClient.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      if (typeof document !== 'undefined') {
+        document.cookie = 'DAMANICH_AUTH_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'DAMANICH_REFRESH_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        if (window.location.pathname !== '/auth/login') {
+          window.location.href = '/auth/login';
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);

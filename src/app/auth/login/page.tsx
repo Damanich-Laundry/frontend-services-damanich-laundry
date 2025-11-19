@@ -1,75 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AuthLayout, LoginForm } from "@/components/modules/auth-pages";
-import MyModal from "@/components/Modal/MyModal"; // pastikan path sesuai
-
-const setCookie = (name: string, value: string, days: number = 7) => {
-  const expires = new Date();
-  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-
-  document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
-};
+import MyModal from "@/components/Modal/MyModal";
+import { useLogin } from "@/hooks/useLogin";
 
 const LoginPage = () => {
   const router = useRouter();
+  const { login, loading, error } = useLogin();
 
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (error) {
+      setErrorModalOpen(true);
+    }
+  }, [error]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (loading) return;
+
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email");
-    const password = formData.get("password");
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/authentications/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      await login({ email, password });
 
-      const data = await res.json();
-      console.log("RAW RESPONSE =", data);
-
-      if (!res.ok) {
-        setErrorMessage(data.message || "Login gagal.");
-        setErrorModalOpen(true);
-        return;
-      }
-
-      const accessToken = data?.tokens?.accessToken;
-      const refreshToken = data?.tokens?.refreshToken;
-
-      if (!accessToken) {
-        setErrorMessage("Token tidak ditemukan dalam respons API.");
-        setErrorModalOpen(true);
-        return;
-      }
-
-      setCookie("ACCESS_TOKEN", accessToken, 7);
-      setCookie("REFRESH_TOKEN", refreshToken, 7);
-
-      // Tampilkan modal sukses
       setSuccessModalOpen(true);
 
-      // Redirect setelah 1,5 detik
       setTimeout(() => {
         router.push("/");
       }, 1500);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Terjadi kesalahan server.");
-      setErrorModalOpen(true);
+    } catch {
     }
   };
 
@@ -85,7 +52,6 @@ const LoginPage = () => {
         />
       </AuthLayout>
 
-      {/* Modal sukses */}
       <MyModal
         title="Login Berhasil"
         isOpen={successModalOpen}
@@ -93,10 +59,9 @@ const LoginPage = () => {
         onOpenChange={setSuccessModalOpen}
         size="sm"
       >
-        <p style={{ fontSize: 16 }}>Anda berhasil masuk. Mengarahkan ke dashboard...</p>
+        <p style={{ fontSize: 16 }}>Anda berhasil masuk. Mengarahkan ke dashboard...</p> 
       </MyModal>
 
-      {/* Modal gagal */}
       <MyModal
         title="Login Gagal"
         isOpen={errorModalOpen}
@@ -104,7 +69,7 @@ const LoginPage = () => {
         onOpenChange={setErrorModalOpen}
         size="sm"
       >
-        <p style={{ fontSize: 16, color: "red" }}>{errorMessage}</p>
+        <p style={{ fontSize: 16, color: "red" }}>{error || "Terjadi kesalahan saat login"}</p>
       </MyModal>
     </>
   );
