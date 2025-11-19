@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Card,
@@ -42,6 +42,20 @@ export default function CustomerForm({
     phone: initialData?.phone || '',
     address: initialData?.address || '',
   });
+
+  useEffect(() => {
+    setFormData({
+      name: initialData?.name || '',
+      email: initialData?.email || '',
+      phone: initialData?.phone || '',
+      address: initialData?.address || '',
+    });
+  }, [
+    initialData?.name,
+    initialData?.email,
+    initialData?.phone,
+    initialData?.address,
+  ]);
 
   const handleChange = (field: string) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { value: string } }
