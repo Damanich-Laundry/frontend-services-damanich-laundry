@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Card,
@@ -37,6 +37,25 @@ const STATUS_OPTIONS = [
   { value: 'Nonaktif', label: 'Nonaktif' }
 ];
 
+const buildInitialFormState = (
+  initialData?: Partial<Service> & { isPopular?: boolean }
+) => {
+  const [valuePart = '2', unitPart = 'Hari'] =
+    initialData?.estimatedTime?.split(' ') ?? [];
+
+  return {
+    name: initialData?.name || '',
+    description: initialData?.description || '',
+    estimatedTimeValue: parseInt(valuePart) || 2,
+    estimatedTimeUnit: unitPart || 'Hari',
+    pricePerKg: initialData?.pricePerKg
+      ? initialData.pricePerKg.replace(/\D/g, '') || ''
+      : '',
+    status: initialData?.status || 'Aktif',
+    isPopular: initialData?.isPopular || false
+  };
+};
+
 export default function ServiceForm({
   initialData,
   onSubmit,
@@ -44,21 +63,13 @@ export default function ServiceForm({
   isEditMode = false,
   onFormChange
 }: ServiceFormProps) {
-  const [formData, setFormData] = useState({
-    name: initialData?.name || '',
-    description: initialData?.description || '',
-    estimatedTimeValue: initialData?.estimatedTime 
-      ? parseInt(initialData.estimatedTime.split(' ')[0]) || 2
-      : 2,
-    estimatedTimeUnit: initialData?.estimatedTime 
-      ? initialData.estimatedTime.split(' ')[1] || 'Hari'
-      : 'Hari',
-    pricePerKg: initialData?.pricePerKg 
-      ? initialData.pricePerKg.replace('Rp ', '').replace(/\./g, '') || ''
-      : '',
-    status: initialData?.status || 'Aktif',
-    isPopular: initialData?.isPopular || false
-  });
+  const [formData, setFormData] = useState(() =>
+    buildInitialFormState(initialData)
+  );
+
+  useEffect(() => {
+    setFormData(buildInitialFormState(initialData));
+  }, [initialData]);
 
   const handleChange = (field: string) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { value: string } }
