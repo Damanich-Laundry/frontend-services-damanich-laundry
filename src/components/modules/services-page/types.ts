@@ -5,6 +5,13 @@ export interface Service {
   estimatedTime: string;
   pricePerKg: string;
   status: 'Aktif' | 'Nonaktif';
+  unit?: string;
+  serviceType?: string;
+  durationHours?: number;
+  pricePerUnitRaw?: number;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ServicesStatsData {

@@ -115,6 +115,7 @@ export default function CustomerTable({
                     <Tooltip title="Lihat Detail">
                       <IconButton 
                         size="small"
+                        disabled
                         onClick={() => handleView(customer.id)}
                         sx={{ color: '#3b82f6' }}
                       >

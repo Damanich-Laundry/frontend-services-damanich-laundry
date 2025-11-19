@@ -101,6 +101,7 @@ export default function ServicesTable({
                       <IconButton 
                         size="small"
                         onClick={() => handleView(service.id)}
+                        disabled
                         sx={{ color: '#3b82f6' }}
                       >
                         <Eye size={16} />

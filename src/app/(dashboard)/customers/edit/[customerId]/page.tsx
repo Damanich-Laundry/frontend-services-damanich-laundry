@@ -1,72 +1,23 @@
-"use client";
+import { buildPageMetadata } from "@/lib/seo";
+import EditCustomerPageClient from "./EditCustomerPageClient";
 
-import React, { useMemo } from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import { ArrowLeft } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
-import CustomerForm from '@/components/modules/customer-page/CustomerForm';
-import { mockCustomers } from '@/datas/dummies';
-import { Customer } from '@/components/modules/customer-page/types';
+type EditCustomerPageProps = {
+  params: { customerId: string };
+};
+
+export const generateMetadata = ({ params }: EditCustomerPageProps) => {
+  const customerId = decodeURIComponent(params.customerId);
+
+  return buildPageMetadata({
+    title: `Edit Pelanggan ${customerId}`,
+    description:
+      "Perbarui informasi pelanggan Damanich Laundry untuk menjaga data tetap akurat.",
+    path: `/customers/edit/${customerId}`,
+  });
+};
 
 const EditCustomerPage = () => {
-  const router = useRouter();
-  const params = useParams();
-  const customerId = Array.isArray(params?.customerId) ? params.customerId[0] : (params?.customerId as string | undefined);
-
-  const customer: Customer | undefined = useMemo(() => {
-    if (!customerId) return undefined;
-    return mockCustomers.find((c) => c.id === customerId);
-  }, [customerId]);
-
-  const handleSubmit = (data: Omit<Customer, 'id'>) => {
-    console.log('Updated customer data:', { id: customerId, ...data });
-    router.push('/customers');
-  };
-
-  const handleCancel = () => {
-    router.push('/customers');
-  };
-
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <Box>
-          <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-            Edit Data Pelanggan
-          </Typography>
-          {customer && (
-            <Typography variant="body2" color="text.secondary">
-              {customer.name} • {customer.phone}
-            </Typography>
-          )}
-        </Box>
-        <Button
-          variant="outlined"
-          startIcon={<ArrowLeft size={16} />}
-          onClick={handleCancel}
-          sx={{
-            borderColor: '#d1d5db',
-            color: '#374151',
-            '&:hover': {
-              borderColor: '#9ca3af',
-              backgroundColor: '#f9fafb'
-            }
-          }}
-        >
-          Kembali ke Data Pelanggan
-        </Button>
-      </Box>
-
-      <CustomerForm
-        initialData={customer}
-        isEditMode
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-      />
-    </Box>
-  );
+  return <EditCustomerPageClient />;
 };
 
 export default EditCustomerPage;
-
-
