@@ -9,71 +9,82 @@ import {
     Button,
     MenuItem,
     Typography,
-    InputAdornment
+    FormControlLabel,
+    Switch
 } from '@mui/material';
-import { X, Plus, Check, Calendar } from 'lucide-react';
-import { Staff } from './types';
-import { parseDate } from '@/utils/date';
+import { X, Plus, Check } from 'lucide-react';
+import { UserRecord } from '@/services/staffService';
 
 interface StaffFormProps {
-    initialData?: Partial<Staff>;
-    onSubmit?: (data: Omit<Staff, 'id'>) => void;
+    initialData?: Partial<UserRecord>;
+    onSubmit?: (data: StaffFormData) => void;
     onCancel?: () => void;
     isEditMode?: boolean;
-    onFormChange?: (data: Partial<Staff>) => void;
+    onFormChange?: (data: Partial<UserRecord>) => void;
+    loading?: boolean;
 }
 
+export interface StaffFormData {
+    username: string;
+    email: string;
+    password?: string;
+    full_name: string;
+    role: string;
+    phone: string;
+    is_active?: boolean;
+}
 
 export default function StaffForm({
     initialData,
     onSubmit,
     onCancel,
     isEditMode = false,
-    onFormChange
+    onFormChange,
+    loading = false
 }: StaffFormProps) {
     const [formData, setFormData] = useState({
-        name: initialData?.name || '',
-        position: initialData?.position || '',
+        username: initialData?.username || '',
+        email: initialData?.email || '',
+        password: '',
+        full_name: initialData?.full_name || '',
+        role: initialData?.role || 'staff',
         phone: initialData?.phone || '',
-        shift: initialData?.shift || '',
-        status: initialData?.status || 'Aktif' as 'Aktif' | 'Non-Aktif' | 'Cuti',
-        joinDate: initialData?.joinDate ? parseDate(initialData.joinDate) : '',
+        is_active: initialData?.is_active !== undefined ? initialData.is_active : true,
     });
 
     const handleChange = (field: string) => (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
+        const value = field === 'is_active' 
+            ? (e.target as HTMLInputElement).checked 
+            : e.target.value;
+
         const newFormData = {
             ...formData,
-            [field]: e.target.value
+            [field]: value
         };
         setFormData(newFormData);
 
         if (onFormChange) {
-            const previewData: Partial<Staff> = {
-                name: newFormData.name,
-                position: newFormData.position,
-                phone: newFormData.phone,
-                shift: newFormData.shift,
-                status: newFormData.status as 'Aktif' | 'Non-Aktif' | 'Cuti',
-                joinDate: newFormData.joinDate,
-            };
-            onFormChange(previewData);
+            onFormChange(newFormData);
         }
     };
-
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const staffData: Omit<Staff, 'id'> = {
-            name: formData.name,
-            position: formData.position,
+        // Untuk edit mode, password optional
+        const staffData: StaffFormData = {
+            username: formData.username,
+            email: formData.email,
+            full_name: formData.full_name,
+            role: formData.role,
             phone: formData.phone,
-            shift: formData.shift,
-            status: formData.status as 'Aktif' | 'Non-Aktif' | 'Cuti',
-            joinDate: formData.joinDate,
+            is_active: formData.is_active,
         };
+        if (formData.password && formData.password.trim() !== '') {
+            staffData.password = formData.password;
+        }
 
         onSubmit?.(staffData);
     };
@@ -92,28 +103,52 @@ export default function StaffForm({
 
                 <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     <TextField
-                        label="Nama Staff"
+                        label="Username"
+                        placeholder="Contoh: budi_santoso"
+                        value={formData.username}
+                        onChange={handleChange('username')}
+                        fullWidth
+                        required
+                        variant="outlined"
+                        helperText="Username untuk login"
+                    />
+
+                    <TextField
+                        label="Nama Lengkap"
                         placeholder="Contoh: Budi Santoso"
-                        value={formData.name}
-                        onChange={handleChange('name')}
+                        value={formData.full_name}
+                        onChange={handleChange('full_name')}
                         fullWidth
                         required
                         variant="outlined"
                     />
 
                     <TextField
-                        label="Posisi"
-                        placeholder="Contoh: Kasir, Operator, Kurir"
-                        value={formData.position}
-                        onChange={handleChange('position')}
+                        label="Email"
+                        type="email"
+                        placeholder="Contoh: budi@example.com"
+                        value={formData.email}
+                        onChange={handleChange('email')}
                         fullWidth
                         required
                         variant="outlined"
+                    />
+
+                    <TextField
+                        label={isEditMode ? "Password (Kosongkan jika tidak ingin mengubah)" : "Password"}
+                        type="password"
+                        placeholder="Masukkan password"
+                        value={formData.password}
+                        onChange={handleChange('password')}
+                        fullWidth
+                        required={!isEditMode}
+                        variant="outlined"
+                        helperText={isEditMode ? "Isi hanya jika ingin mengubah password" : "Minimal 6 karakter"}
                     />
 
                     <TextField
                         label="Nomor Telepon"
-                        placeholder="Contoh: +62 812-3456-7890"
+                        placeholder="Contoh: 08123456789"
                         value={formData.phone}
                         onChange={handleChange('phone')}
                         fullWidth
@@ -122,52 +157,34 @@ export default function StaffForm({
                     />
 
                     <TextField
-                        label="Shift"
+                        label="Role"
                         select
-                        value={formData.shift}
-                        onChange={handleChange('shift')}
+                        value={formData.role}
+                        onChange={handleChange('role')}
                         fullWidth
                         required
                         variant="outlined"
                     >
-                        <MenuItem value="Pagi">Pagi</MenuItem>
-                        <MenuItem value="Siang">Siang</MenuItem>
-                        <MenuItem value="Malam">Malam</MenuItem>
-                        <MenuItem value="Full">Full</MenuItem>
+                        <MenuItem value="admin">Admin</MenuItem>
+                        <MenuItem value="staff">Staff</MenuItem>
+                        <MenuItem value="kasir">Kasir</MenuItem>
+                        <MenuItem value="operator">Operator</MenuItem>
+                        <MenuItem value="kurir">Kurir</MenuItem>
                     </TextField>
 
-                    <TextField
-                        label="Status"
-                        select
-                        value={formData.status}
-                        onChange={handleChange('status')}
-                        fullWidth
-                        required
-                        variant="outlined"
-                    >
-                        <MenuItem value="Aktif">Aktif</MenuItem>
-                        <MenuItem value="Non-Aktif">Non-Aktif</MenuItem>
-                        <MenuItem value="Cuti">Cuti</MenuItem>
-                    </TextField>
-
-                    <TextField
-                        label="Tanggal Bergabung"
-                        type="date"
-                        value={formData.joinDate}
-                        onChange={handleChange('joinDate')}
-                        fullWidth
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Calendar size={16} style={{ color: '#9ca3af' }} />
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-
+                    {isEditMode && (
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={formData.is_active}
+                                    onChange={handleChange('is_active')}
+                                    color="primary"
+                                />
+                            }
+                            label="Status Aktif"
+                        />
+                    )}
+                    
                     <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
                         <Button
                             variant="outlined"
@@ -187,6 +204,7 @@ export default function StaffForm({
                         <Button
                             type="submit"
                             variant="contained"
+                            disabled={loading}
                             startIcon={isEditMode ? <Check size={16} /> : <Plus size={16} />}
                             sx={{
                                 backgroundColor: isEditMode ? '#6b7280' : '#1976d2',
@@ -195,7 +213,7 @@ export default function StaffForm({
                                 }
                             }}
                         >
-                            {isEditMode ? 'Simpan Perubahan' : 'Tambahkan Staff'}
+                            {loading ? 'Memproses...' : (isEditMode ? 'Simpan Perubahan' : 'Tambahkan Staff')}
                         </Button>
                     </Box>
                 </Box>
@@ -203,4 +221,3 @@ export default function StaffForm({
         </Card>
     );
 }
-

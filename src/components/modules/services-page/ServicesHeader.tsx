@@ -12,7 +12,6 @@ interface ServicesHeaderProps {
 }
 
 export default function ServicesHeader({
-  searchQuery,
   onSearchChange,
   onAddService
 }: ServicesHeaderProps) {

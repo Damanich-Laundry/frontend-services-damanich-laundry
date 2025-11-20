@@ -1,17 +1,33 @@
 "use client";
 
 import React from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Alert, Box, Typography, Button } from "@mui/material";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import StaffForm from "@/components/modules/staff-page/StaffForm";
+import StaffForm, { StaffFormData } from "@/components/modules/staff-page/StaffForm";
+import { useCreateStaff } from "@/hooks";
 
 const CreateStaffPageClient = () => {
   const router = useRouter();
+  const { createStaff, loading, error } = useCreateStaff();
 
-  const handleSubmit = (data: any) => {
-    console.log("Staff data to submit:", data);
-    router.push("/staffs");
+  const handleSubmit = async (data: StaffFormData) => {
+    try {
+      const payload = {
+        username: data.username,
+        email: data.email,
+        password: data.password || '', 
+        full_name: data.full_name,
+        role: data.role.toLowerCase(),
+        phone: data.phone,
+      };
+
+      await createStaff(payload);
+      
+      router.push("/staffs");
+    } catch (err) {
+      console.error("Failed to create staff:", err);
+    }
   };
 
   const handleCancel = () => {
@@ -25,13 +41,19 @@ const CreateStaffPageClient = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-start",
+          flexWrap: "wrap",
+          gap: 2,
         }}
       >
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.5 }}>
             Tambah Staff Baru
           </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Lengkapi informasi staff baru yang akan ditambahkan ke sistem
+          </Typography>
         </Box>
+        
         <Button
           variant="outlined"
           startIcon={<ArrowLeft size={16} />}
@@ -45,14 +67,24 @@ const CreateStaffPageClient = () => {
             },
           }}
         >
-          Kembali ke Data Staff
+          Kembali
         </Button>
       </Box>
 
-      <StaffForm onSubmit={handleSubmit} onCancel={handleCancel} />
+      {error && (
+        <Alert severity="error" onClose={() => {}}>
+          {error}
+        </Alert>
+      )}
+
+      <StaffForm
+        isEditMode={false}
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        loading={loading}
+      />
     </Box>
   );
 };
 
 export default CreateStaffPageClient;
-

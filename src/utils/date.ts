@@ -30,3 +30,16 @@ export function parseDate(dateStr: string): string {
   }
 }
 
+/**
+ * Format date string to Indonesian format (e.g., "18 Nov 2025")
+ * @param dateString - ISO date string
+ * @returns Formatted date string
+ */
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.toLocaleString('id-ID', { month: 'short' });
+  const year = date.getFullYear();
+  return `${day} ${month} ${year}`;
+}
+

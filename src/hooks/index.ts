@@ -8,6 +8,11 @@ export { useServices } from './useServices';
 export { useServiceDetail } from './useServiceDetail';
 export { useUpdateService } from './useUpdateService';
 export { useCreateService } from './useCreateService';
+export { useStaffs } from './useStaffs';
+export { useStaffDetail } from './useStaffDetail';
+export { useCreateStaff } from './useCreateStaff';
+export { useUpdateStaff } from './useUpdateStaff';
+export { useDeleteStaff } from './useDeleteStaff';
 // export { useUsers } from './useUsers';
 
 // Re-export types for convenience
@@ -21,4 +26,6 @@ export type { UseServicesReturn } from './useServices';
 export type { UseServiceDetailReturn } from './useServiceDetail';
 export type { UseUpdateServiceReturn } from './useUpdateService';
 export type { UseCreateServiceReturn } from './useCreateService';
+export type { UseStaffDetailReturn } from './useStaffDetail';
+export type { UseUpdateStaffReturn } from './useUpdateStaff';
 // export type { UseUsersReturn } from './useUsers';

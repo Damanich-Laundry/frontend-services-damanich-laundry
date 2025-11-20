@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Box, Card, CardContent, Typography, List, ListItem, ListItemIcon } from '@mui/material';
+import { Card, CardContent, Typography, List, ListItem, ListItemIcon } from '@mui/material';
 import { Info, Star } from 'lucide-react';
 
 export default function ServiceInfoCard() {

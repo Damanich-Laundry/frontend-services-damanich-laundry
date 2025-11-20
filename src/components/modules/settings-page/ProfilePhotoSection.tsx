@@ -12,7 +12,7 @@ import {
   ListItem,
   ListItemText,
 } from '@mui/material';
-import { Upload, X } from 'lucide-react';
+import { Upload } from 'lucide-react';
 
 export default function ProfilePhotoSection() {
   const [profileImage, setProfileImage] = useState<string | null>(null);

@@ -12,7 +12,6 @@ interface StaffHeaderProps {
 }
 
 export default function StaffHeader({
-  searchQuery,
   onSearchChange,
   onAddStaff
 }: StaffHeaderProps) {

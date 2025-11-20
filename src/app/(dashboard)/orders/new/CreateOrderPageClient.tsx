@@ -10,22 +10,19 @@ import {
     OrderFormData,
     OrderFormRef,
 } from "@/components/modules/orders-page";
-import {mockCustomers, mockServices} from "@/datas/dummies";
 import {useCustomers, useServices} from "@/hooks";
 import type {
     Customer,
-    CustomerStatsData,
 } from "@/components/modules/customer-page/types";
 
 const CreateOrderPageClient = () => {
     const router = useRouter();
     const formRef = useRef<OrderFormRef>(null);
-    const {customers: customerData, loading, customerError} = useCustomers();
-    const {services: serviceRecords, loading: isLoading, servicesError, refetch} = useServices();
+    const {customers: customerData} = useCustomers();
+    const {services: serviceRecords} = useServices();
 
     const handleSubmit = (data: OrderFormData) => {
         console.log("Order data to submit:", data);
-        // TODO: Implement API call to create order
         router.push("/orders");
     };
 
@@ -67,7 +64,7 @@ const CreateOrderPageClient = () => {
             <OrderForm
                 ref={formRef}
                 customers={formattedCustomers}
-                services={serviceRecords}
+                // services={serviceRecords}
                 onSubmit={handleSubmit}
                 onCancel={handleCancel}
                 onAddNewCustomer={handleAddNewCustomer}

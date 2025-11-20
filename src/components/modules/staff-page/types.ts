@@ -1,12 +1,16 @@
 export interface Staff {
-    id: string;
-    name: string;
-    position: string;
-    phone: string;
-    shift: string;
-    status: 'Aktif' | 'Non-Aktif' | 'Cuti';
-    joinDate: string;
+  id: number;
+  username: string;
+  email: string;
+  full_name: string;
+  role: string;
+  phone: string;
+  is_active: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+export type StaffStatus = 'Aktif' | 'Non-Aktif'
 
 
 export interface StaffStatsData {

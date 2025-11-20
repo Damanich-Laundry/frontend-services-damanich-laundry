@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Box } from '@mui/material';
-import { List, CheckCircle, XCircle, Star, Users, UserPlus, ShoppingCart, UserCheck } from 'lucide-react';
+import { Users, UserPlus, ShoppingCart, UserCheck } from 'lucide-react';
 import { StatCard } from '@/components/shared';
 import {  CustomerStatsData } from './types';
 

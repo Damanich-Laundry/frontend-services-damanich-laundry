@@ -12,7 +12,6 @@ interface OrdersHeaderProps {
 }
 
 export default function OrdersHeader({
-  searchQuery,
   onSearchChange,
   onAddOrder
 }: OrdersHeaderProps) {

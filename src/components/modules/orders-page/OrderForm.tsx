@@ -39,7 +39,6 @@ const OrderForm = forwardRef<OrderFormRef, OrderFormProps>(({
   services = [],
   initialData,
   onSubmit,
-  onCancel,
   onAddNewCustomer
 }, ref) => {
   const [formData, setFormData] = useState<OrderFormData>({

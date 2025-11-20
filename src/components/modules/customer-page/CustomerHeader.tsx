@@ -12,7 +12,6 @@ interface CustomerHeaderProps {
 }
 
 export default function CustomerHeader({
-  searchQuery,
   onSearchChange,
   onAddCustomer
 }: CustomerHeaderProps) {

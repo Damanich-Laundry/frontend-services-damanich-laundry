@@ -9,7 +9,6 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import { usePathname } from 'next/navigation';
 import { User, CreditCard, Bell, FileText, Edit } from 'lucide-react';
 
 interface SettingsMenuItem {
