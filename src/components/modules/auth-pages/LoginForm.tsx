@@ -96,18 +96,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
           Log In
         </Button>
 
-        {/* Social login buttons */}
-        <SocialLoginButtons 
-          onGoogleLogin={onGoogleLogin}
-          onAppleLogin={onAppleLogin}
-        />
-
-        {/* Sign up link */}
-        <Typography sx={{ textAlign: 'center' }}>
-          <Link href={signUpLink} underline="hover" sx={{ color: '#1976d2' }}>
-            No account yet? Sign Up
-          </Link>
-        </Typography>
       </Box>
     </Paper>
   );
