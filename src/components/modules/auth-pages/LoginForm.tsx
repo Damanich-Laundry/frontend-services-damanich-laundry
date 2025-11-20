@@ -11,7 +11,6 @@ import {
   Link,
   Paper,
 } from '@mui/material';
-import SocialLoginButtons from './SocialLoginButtons';
 
 interface LoginFormProps {
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -23,10 +22,6 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({
   onSubmit,
-  onGoogleLogin,
-  onAppleLogin,
-  forgotPasswordLink = "#",
-  signUpLink = "#",
 }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,7 +42,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           fullWidth
           name="email" 
           label="Email Address"
-          placeholder="Placeholder"
+          placeholder="Enter your email"
           variant="outlined"
           type="email"
           sx={{ mb: 3 }}
@@ -59,7 +54,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           name="password"  
           label="Password"
           type="password"
-          placeholder="Placeholder"
+          placeholder="Enter your password"
           variant="outlined"
           sx={{ mb: 1 }}
         />
@@ -73,9 +68,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
             control={<Checkbox />}
             label="Remember me"
           />
-          <Link href={forgotPasswordLink} underline="hover" sx={{ color: '#1976d2' }}>
-            Forgot Password?
-          </Link>
         </Box>
 
         {/* Log In button */}
