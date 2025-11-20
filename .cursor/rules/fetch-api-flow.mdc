@@ -1,0 +1,12 @@
+---
+description: Data fetching flow requirements for pages, hooks, and services
+globs: "src/**/*"
+alwaysApply: true
+---
+
+# Fetching API Flow
+
+- Pages should obtain data through dedicated hooks in `@/hooks`, not by calling services directly; this keeps UI concerns decoupled from networking logic.
+- Hooks encapsulate state, side effects, and cache/mutation handling, and must delegate all HTTP requests to the appropriate module under `@/services`.
+- Service modules are the single source of truth for API endpoints; they should perform request composition via shared clients (e.g., `@/lib/apiClient`) and expose typed helpers consumed by hooks.
+- When introducing a new data workflow, follow the chain `page -> @/hooks -> @/services`, adding tests/mocks at the hook layer and keeping services free of React-specific logic.
