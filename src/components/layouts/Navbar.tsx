@@ -143,8 +143,6 @@ export default function Navbar({ pageTitle, onMenuToggle }: NavbarProps) {
               horizontal: 'right',
             }}
           >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleClose}>Settings</MenuItem>
 
             {/* 🔥 LOGOUT */}
             <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>

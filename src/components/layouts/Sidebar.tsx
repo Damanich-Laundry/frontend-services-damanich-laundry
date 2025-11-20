@@ -40,7 +40,6 @@ const menuItems: MenuItem[] = [
   { icon: Users, label: "Pelanggan", href: "/customers" },
   { icon: Layers, label: "Layanan", href: "/services" },
   { icon: User, label: "Staff", href: "/staffs" },
-  { icon: Settings, label: "Pengaturan", href: "/settings" },
 ];
 
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {

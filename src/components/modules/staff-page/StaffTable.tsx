@@ -171,6 +171,7 @@ export default function StaffTable({
                       <Tooltip title="Lihat Detail" arrow>
                         <IconButton 
                           size="small"
+                          disabled
                           onClick={() => handleView(staffMember.id)}
                           sx={{ 
                             color: '#3b82f6',
