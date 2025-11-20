@@ -8,6 +8,7 @@ import {
 import { Button, Avatar, Box, Typography, Menu, MenuItem, IconButton } from '@mui/material';
 import { SearchInput } from "@/components/shared";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface NavbarProps {
   pageTitle: string;
@@ -17,6 +18,7 @@ interface NavbarProps {
 export default function Navbar({ pageTitle, onMenuToggle }: NavbarProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const router = useRouter();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -25,6 +27,21 @@ export default function Navbar({ pageTitle, onMenuToggle }: NavbarProps) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  // -----------------------------
+  // 👇 HANDLE LOGOUT (FINAL)
+  // -----------------------------
+  const handleLogout = () => {
+    // Hapus cookie token
+    document.cookie = "token=; Max-Age=0; path=/;";
+
+    // Tutup menu
+    handleClose();
+
+    // Redirect ke login
+    router.push("/auth/login");
+  };
+  // -----------------------------
 
   return (
     <Box component="header" sx={{ 
@@ -128,7 +145,9 @@ export default function Navbar({ pageTitle, onMenuToggle }: NavbarProps) {
           >
             <MenuItem onClick={handleClose}>Profile</MenuItem>
             <MenuItem onClick={handleClose}>Settings</MenuItem>
-            <MenuItem onClick={handleClose} sx={{ color: 'error.main' }}>
+
+            {/* 🔥 LOGOUT */}
+            <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
               Logout
             </MenuItem>
           </Menu>
